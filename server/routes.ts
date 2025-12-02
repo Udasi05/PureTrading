@@ -1,23 +1,25 @@
-// server/routes.ts
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { isAuthenticated } from "./replitAuth";
 import { insertSignalSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth does nothing now, but we keep the call so the API shape stays stable
   await setupAuth(app);
 
-  // ---- Auth/user endpoint (public) ----
-  app.get("/api/auth/user", isAuthenticated, async (_req, res) => {
-    // No auth → always return null user
-    return res.status(200).json({ user: null });
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = "dev-user";
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
   });
 
-  // ---- Signals ----
-  app.get("/api/signals", isAuthenticated, async (_req, res) => {
+  app.get("/api/signals", isAuthenticated, async (req, res) => {
     try {
       const signals = await storage.getSignals();
       res.json(signals);
@@ -47,9 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(signal);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res
-          .status(400)
-          .json({ message: "Invalid signal data", errors: error.errors });
+        return res.status(400).json({ message: "Invalid signal data", errors: error.errors });
       }
       console.error("Error creating signal:", error);
       res.status(500).json({ message: "Failed to create signal" });
@@ -69,8 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ---- Memberships (public, use dummy user id) ----
-  app.get("/api/memberships", isAuthenticated, async (_req: any, res) => {
+  app.get("/api/memberships", isAuthenticated, async (req: any, res) => {
     try {
       const userId = "dev-user";
       const memberships = await storage.getMemberships(userId);
@@ -92,9 +91,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         status: "active",
         paymentId: req.body.paymentId,
       });
-
+      
       await storage.updateUserMembership(userId, true);
-
+      
       res.status(201).json(membership);
     } catch (error) {
       console.error("Error creating membership:", error);
@@ -102,8 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ---- Economic events ----
-  app.get("/api/economic-events", isAuthenticated, async (_req, res) => {
+  app.get("/api/economic-events", isAuthenticated, async (req, res) => {
     try {
       const events = await storage.getEconomicEvents();
       res.json(events);
@@ -113,8 +111,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ---- Market analysis ----
-  app.get("/api/market-analysis", isAuthenticated, async (_req, res) => {
+  app.get("/api/market-analysis", isAuthenticated, async (req, res) => {
     try {
       const analysis = await storage.getMarketAnalysis();
       res.json(analysis);
@@ -126,4 +123,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
   return httpServer;
+}
+
+export async function setupAuth(app: Express) {
+  // no auth in production for now (accepting app for future use)
 }

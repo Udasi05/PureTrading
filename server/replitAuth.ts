@@ -1,12 +1,26 @@
-// server/replitAuth.ts
-import type { Express, RequestHandler } from "express";
+import { Request, Response, NextFunction } from "express";
 
-// No authentication / sessions for now
-export async function setupAuth(app: Express) {
-  // Nothing to configure – public API
+export interface AuthenticatedRequest extends Request {
+  // add custom auth properties here if needed, e.g. user?: User;
 }
 
-// Always allow the request through
-export const isAuthenticated: RequestHandler = (_req, _res, next) => {
+export interface AuthenticatedResponse extends Response {
+  // extend with custom response helpers if needed
+}
+
+export type IsAuthenticatedMiddleware = (
+  req: AuthenticatedRequest,
+  res: AuthenticatedResponse,
+  next: NextFunction
+) => void;
+
+export const isAuthenticated = (req: any, res: any, next: any) => {
+  // No authentication for now → always allow
+  req.user = null;
   next();
 };
+
+
+export async function setupAuth() {
+  // no auth in production for now
+}
