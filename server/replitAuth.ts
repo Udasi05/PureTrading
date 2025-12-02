@@ -1,16 +1,12 @@
+// server/replitAuth.ts
 import type { Express, RequestHandler } from "express";
 
-// No-op session middleware for local development
-export function getSession() {
-  return (req: any, res: any, next: any) => next();
-}
-
-// No auth setup in local dev
+// No authentication / sessions for now
 export async function setupAuth(app: Express) {
-  // nothing
+  // Nothing to configure – public API
 }
 
-// Always treat user as authenticated in local dev
-export const isAuthenticated: RequestHandler = (req, res, next) => {
-  return next();
+// Always allow the request through
+export const isAuthenticated: RequestHandler = (_req, _res, next) => {
+  next();
 };

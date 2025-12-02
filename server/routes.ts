@@ -10,7 +10,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = "dev-user";
       const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
@@ -71,7 +71,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/memberships", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = "dev-user";
       const memberships = await storage.getMemberships(userId);
       res.json(memberships);
     } catch (error) {
@@ -82,7 +82,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/memberships", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = "dev-user";
       const membership = await storage.createMembership({
         userId,
         planName: req.body.planName || "Pure Trading Membership",
