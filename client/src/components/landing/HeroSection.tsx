@@ -108,68 +108,6 @@ export function HeroSection() {
               ))}
             </div>
           </div>
-
-          <div className="relative hidden lg:block">
-            <div className="relative bg-card border border-border rounded-2xl p-6 shadow-2xl card-glow">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-heading font-bold">Live Signal</h3>
-                    <p className="text-sm text-muted-foreground">EUR/USD</p>
-                  </div>
-                </div>
-                <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
-                  BUY
-                </Badge>
-              </div>
-
-              <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-muted/50 rounded-lg p-3 text-center">
-                    <p className="text-xs text-muted-foreground mb-1">Entry</p>
-                    <p className="font-mono font-bold text-primary">1.0845</p>
-                  </div>
-                  <div className="bg-muted/50 rounded-lg p-3 text-center">
-                    <p className="text-xs text-muted-foreground mb-1">Stop Loss</p>
-                    <p className="font-mono font-bold text-destructive">1.0820</p>
-                  </div>
-                  <div className="bg-muted/50 rounded-lg p-3 text-center">
-                    <p className="text-xs text-muted-foreground mb-1">Take Profit</p>
-                    <p className="font-mono font-bold text-green-500">1.0895</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between bg-muted/30 rounded-lg p-4">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Lot Size</p>
-                    <p className="font-bold">0.5 Lots</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Risk:Reward</p>
-                    <p className="font-bold text-primary">1:2</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Session</p>
-                    <p className="font-bold">London</p>
-                  </div>
-                </div>
-
-                <div className="bg-accent/50 rounded-lg p-4">
-                  <p className="text-xs text-muted-foreground mb-1">Trade Rationale</p>
-                  <p className="text-sm">
-                    Bullish momentum confirmed after liquidity sweep below 1.0820. 
-                    Strong institutional order flow detected at entry zone.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl" />
-            <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-primary/10 rounded-full blur-2xl" />
-          </div>
         </div>
       </div>
     </section>

@@ -80,18 +80,7 @@ export function Navigation() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={toggleTheme}
-              data-testid="button-theme-toggle"
-            >
-              {theme === "dark" ? (
-                <Sun className="w-5 h-5" />
-              ) : (
-                <Moon className="w-5 h-5" />
-              )}
-            </Button>
+
 
             {isAuthenticated && user ? (
               <DropdownMenu>
@@ -130,9 +119,6 @@ export function Navigation() {
               </DropdownMenu>
             ) : (
               <div className="hidden sm:flex items-center gap-2">
-                <Button variant="ghost" asChild data-testid="button-login">
-                  <a href="/api/login">Log In</a>
-                </Button>
                 <Button asChild data-testid="button-join">
                   <a href="/api/login">Join at ₹9</a>
                 </Button>
