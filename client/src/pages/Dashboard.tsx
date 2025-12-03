@@ -28,18 +28,13 @@ export default function Dashboard() {
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-    }
-  }, [isAuthenticated, authLoading, toast]);
+ // PUBLIC VERSION — Do NOT redirect
+useEffect(() => {
+  if (!authLoading && !isAuthenticated) {
+    // No redirect, no toast — dashboard is visible even without login
+  }
+}, [isAuthenticated, authLoading]);
+
 
   const { data: signals, isLoading: signalsLoading } = useQuery<Signal[]>({
     queryKey: ["/api/signals"],
