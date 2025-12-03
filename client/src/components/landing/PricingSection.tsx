@@ -32,7 +32,7 @@ const benefits = [
   {
     icon: Shield,
     title: "Perfect Risk Management",
-    description: "Every signal calculated for optimal risk:reward",
+    description: "Each signal comes with calculated risk:reward ratios for both (propfirms & real accounts)",
   },
   {
     icon: TrendingUp,
@@ -43,6 +43,11 @@ const benefits = [
     icon: SiTelegram,
     title: "Telegram Delivery",
     description: "Instant signal notifications on your phone",
+  },
+  {
+    icon: Zap,
+    title: "Real-time Updates",
+    description: "Trade management and target updates",
   },
 ];
 
@@ -81,11 +86,11 @@ export function PricingSection() {
               
               <div className="mt-6 flex items-center justify-center gap-4">
                 <div className="flex items-baseline">
-                  <span className="text-2xl text-muted-foreground line-through">₹499</span>
+                  <span className="text-2xl text-muted-foreground line-through">₹4999</span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-5xl font-bold text-gradient">₹9</span>
-                  <span className="text-muted-foreground">/lifetime</span>
+                  <span className="text-5xl font-bold text-gradient">₹99</span>
+                  <span className="text-muted-foreground">/Month</span>
                 </div>
               </div>
               
@@ -121,12 +126,12 @@ export function PricingSection() {
               data-testid="button-pricing-cta"
             >
               <a href="/api/login">
-                Get Started Now - ₹9 Only
+                Get Started Now - ₹99 Only
               </a>
             </Button>
 
             <p className="text-center text-xs text-muted-foreground mt-4">
-              Instant access after payment. No recurring charges.
+              Instant access after payment.
             </p>
           </Card>
         </div>

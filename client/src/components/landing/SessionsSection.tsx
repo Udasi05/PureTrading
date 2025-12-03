@@ -6,8 +6,7 @@ const sessions = [
   {
     name: "Asian Session",
     icon: Moon,
-    time: "12:00 AM - 9:00 AM IST",
-    markets: ["Tokyo", "Sydney", "Singapore"],
+    time: "5:30 AM - 2:30 PM IST",
     color: "text-purple-400",
     bgColor: "bg-purple-500/10",
     borderColor: "border-purple-500/30",
@@ -17,7 +16,6 @@ const sessions = [
     name: "London Session",
     icon: Building2,
     time: "1:30 PM - 10:30 PM IST",
-    markets: ["London", "Frankfurt", "Paris"],
     color: "text-blue-400",
     bgColor: "bg-blue-500/10",
     borderColor: "border-blue-500/30",
@@ -27,7 +25,6 @@ const sessions = [
     name: "New York Session",
     icon: Sun,
     time: "6:30 PM - 3:30 AM IST",
-    markets: ["New York", "Chicago", "Toronto"],
     color: "text-orange-400",
     bgColor: "bg-orange-500/10",
     borderColor: "border-orange-500/30",
@@ -80,21 +77,6 @@ export function SessionsSection() {
                   <div className="flex items-center gap-2 mb-2">
                     <Clock className={`w-4 h-4 ${session.color}`} />
                     <span className="text-sm font-medium">{session.time}</span>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">Major Markets:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {session.markets.map((market, marketIndex) => (
-                      <Badge
-                        key={marketIndex}
-                        variant="outline"
-                        className="text-xs"
-                      >
-                        {market}
-                      </Badge>
-                    ))}
                   </div>
                 </div>
               </div>

@@ -54,14 +54,14 @@ export function FinalCTASection() {
             data-testid="button-final-cta"
           >
             <a href="/api/login">
-              Join Pure Trading at ₹9
+              Join Pure Trading at ₹99
               <ArrowRight className="w-5 h-5 ml-2" />
             </a>
           </Button>
 
           <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground">
-            <span className="line-through">₹499</span>
-            <span className="text-primary font-bold text-2xl">₹9</span>
+            <span className="line-through">₹4999</span>
+            <span className="text-primary font-bold text-2xl">₹99</span>
             <Badge variant="destructive">98% OFF</Badge>
           </div>
 

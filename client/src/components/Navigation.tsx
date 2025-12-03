@@ -120,7 +120,7 @@ export function Navigation() {
             ) : (
               <div className="hidden sm:flex items-center gap-2">
                 <Button asChild data-testid="button-join">
-                  <a href="/api/login">Join at ₹9</a>
+                  <a href="/api/login">Join at ₹99</a>
                 </Button>
               </div>
             )}
@@ -156,11 +156,8 @@ export function Navigation() {
                       </>
                     ) : (
                       <>
-                        <Button variant="outline" asChild className="w-full">
-                          <a href="/api/login">Log In</a>
-                        </Button>
                         <Button asChild className="w-full">
-                          <a href="/api/login">Join at ₹9</a>
+                          <a href="/api/login">Join at ₹99</a>
                         </Button>
                       </>
                     )}

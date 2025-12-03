@@ -17,7 +17,7 @@ export function Footer() {
               <span className="font-heading text-xl font-bold">Pure Trading</span>
             </Link>
             <p className="text-muted-foreground max-w-md mb-6">
-              Your trusted partner for professional forex signals, market analysis, 
+              Your trusted partner for professional forex signals, market analysis,
               and trading education. Start your journey to consistent profits today.
             </p>
           <div className="flex items-center gap-4">
@@ -26,7 +26,7 @@ export function Footer() {
               href="mailto:support@puretrading.com"
               className="text-white hover:underline"
             >
-              support@puretrading.com
+              support@puretrading.in
             </a>
           </div>
           </div>

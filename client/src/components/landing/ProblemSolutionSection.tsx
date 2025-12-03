@@ -43,7 +43,7 @@ const solutions = [
   },
   {
     title: "Perfect Risk Management",
-    description: "Each signal comes with calculated risk:reward ratios for consistency",
+    description: "Each signal comes with calculated risk:reward ratios for both (propfirms & real accounts)",
   },
   {
     title: "Daily Market Overview",

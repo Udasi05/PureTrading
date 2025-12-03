@@ -13,9 +13,9 @@ const taglines = [
 ];
 
 const trustIndicators = [
-  { icon: Users, label: "500+ Traders", value: "Active" },
+  { icon: Users, label: "1000+ Traders", value: "Active" },
   { icon: Zap, label: "Daily Signals", value: "Live" },
-  { icon: Clock, label: "3 Sessions", value: "24/7" },
+  { icon: Clock, label: "3 Sessions", value: "Asian,London,NewYork" },
 ];
 
 export function HeroSection() {
@@ -79,13 +79,13 @@ export function HeroSection() {
                 data-testid="button-hero-cta"
               >
                 <a href="/api/login">
-                  Join at ₹9 Only
+                  Join at ₹99 Only
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </a>
               </Button>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="line-through">₹499</span>
-                <span className="text-primary font-bold text-lg">₹9</span>
+                <span className="line-through">₹4999</span>
+                <span className="text-primary font-bold text-lg">₹99</span>
                 <Badge variant="destructive" className="text-xs">98% OFF</Badge>
               </div>
             </div>

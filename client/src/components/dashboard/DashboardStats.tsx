@@ -38,6 +38,13 @@ export function DashboardStats({ totalSignals, activeSignals, todaySignals }: Da
       color: "text-orange-400",
       bgColor: "bg-orange-500/10",
     },
+    {
+      icon: Zap,
+      label: "Avg. Daily Signals",
+      value: "15",
+      color: "text-red-400",
+      bgColor: "bg-red-500/10",
+    }
   ];
 
   return (

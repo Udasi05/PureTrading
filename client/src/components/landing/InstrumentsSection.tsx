@@ -16,7 +16,7 @@ const instruments = [
   {
     name: "Gold (XAUUSD)",
     description: "Spot Gold trading signals",
-    pairs: ["XAU/USD", "XAU/EUR"],
+    pairs: ["XAU/USD"],
     icon: () => (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
@@ -29,7 +29,7 @@ const instruments = [
   {
     name: "Silver (XAGUSD)",
     description: "Spot Silver trading signals",
-    pairs: ["XAG/USD", "XAG/EUR"],
+    pairs: ["XAG/USD"],
     icon: () => (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
         <circle cx="12" cy="12" r="10" strokeWidth="2" stroke="currentColor" fill="none" />
