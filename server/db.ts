@@ -1,12 +1,20 @@
 import mongoose from "mongoose";
 
 export async function connectDB() {
-  if (!process.env.MONGODB_URI) {
-    throw new Error("MONGODB_URI missing!");
+  const uri = process.env.MONGODB_URI;
+
+  if (!uri) {
+    throw new Error("MONGODB_URI is missing");
   }
 
-  if (mongoose.connection.readyState === 1) return;
+  try {
+    await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 20000,
+    });
 
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log("MongoDB connected ✔");
+    console.log("MongoDB connected successfully");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  }
 }
