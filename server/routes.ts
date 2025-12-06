@@ -1,29 +1,53 @@
+// server/routes.ts
 import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { isAuthenticated } from "./replitAuth";
-import { insertSignalSchema } from "@shared/schema";
-import { z } from "zod";
 import { razorpay } from "./payment";
 import crypto from "crypto";
+import { z } from "zod";
 
+// ------------------------------
+// ZOD VALIDATION SCHEMAS
+// ------------------------------
+const signalSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+});
 
+const membershipSchema = z.object({
+  planName: z.string().optional(),
+  amount: z.number().optional(),
+  currency: z.string().optional(),
+  paymentId: z.string().optional(),
+});
+
+// ------------------------------
+export async function setupAuth(_app: Express) {
+  // No authentication implemented now
+}
+
+// ------------------------------
 export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
 
+  // ------------------------------
+  // AUTH ROUTE
+  // ------------------------------
   app.get("/api/auth/user", isAuthenticated, async (_req, res) => {
-  // No authentication / no DB lookup – always return null
-  return res.status(200).json({ user: null });
-});
+    return res.status(200).json({ user: null });
+  });
 
-
-  app.get("/api/signals", isAuthenticated, async (req, res) => {
+  // ------------------------------
+  // SIGNALS
+  // ------------------------------
+  app.get("/api/signals", isAuthenticated, async (_req, res) => {
     try {
       const signals = await storage.getSignals();
       res.json(signals);
-    } catch (error) {
-      console.error("Error fetching signals:", error);
+    } catch (err) {
+      console.error("Error fetching signals:", err);
       res.status(500).json({ message: "Failed to fetch signals" });
     }
   });
@@ -31,173 +55,172 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/signals/:id", isAuthenticated, async (req, res) => {
     try {
       const signal = await storage.getSignal(req.params.id);
-      if (!signal) {
-        return res.status(404).json({ message: "Signal not found" });
-      }
+      if (!signal) return res.status(404).json({ message: "Signal not found" });
       res.json(signal);
-    } catch (error) {
-      console.error("Error fetching signal:", error);
+    } catch (err) {
+      console.error("Error fetching signal:", err);
       res.status(500).json({ message: "Failed to fetch signal" });
     }
   });
 
-  app.post("/api/signals", isAuthenticated, async (req: any, res) => {
+  app.post("/api/signals", isAuthenticated, async (req, res) => {
     try {
-      const validatedData = insertSignalSchema.parse(req.body);
-      const signal = await storage.createSignal(validatedData);
-      res.status(201).json(signal);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid signal data", errors: error.errors });
-      }
-      console.error("Error creating signal:", error);
+      const validated = signalSchema.parse(req.body);
+      const created = await storage.createSignal(validated);
+      res.status(201).json(created);
+    } catch (err: any) {
+      if (err instanceof z.ZodError)
+        return res.status(400).json({ message: "Invalid data", errors: err.errors });
+
+      console.error("Signal create error:", err);
       res.status(500).json({ message: "Failed to create signal" });
     }
   });
 
-  app.patch("/api/signals/:id", isAuthenticated, async (req: any, res) => {
+  app.patch("/api/signals/:id", isAuthenticated, async (req, res) => {
     try {
-      const signal = await storage.updateSignal(req.params.id, req.body);
-      if (!signal) {
-        return res.status(404).json({ message: "Signal not found" });
-      }
-      res.json(signal);
-    } catch (error) {
-      console.error("Error updating signal:", error);
+      const updated = await storage.updateSignal(req.params.id, req.body);
+      if (!updated) return res.status(404).json({ message: "Signal not found" });
+      res.json(updated);
+    } catch (err) {
+      console.error("Update signal error:", err);
       res.status(500).json({ message: "Failed to update signal" });
     }
   });
 
-  app.get("/api/memberships", isAuthenticated, async (req: any, res) => {
+  // ------------------------------
+  // MEMBERSHIPS
+  // ------------------------------
+  app.get("/api/memberships", isAuthenticated, async (_req, res) => {
     try {
       const userId = "dev-user";
-      const memberships = await storage.getMemberships(userId);
-      res.json(memberships);
-    } catch (error) {
-      console.error("Error fetching memberships:", error);
+      const data = await storage.getMemberships(userId);
+      res.json(data);
+    } catch (err) {
+      console.error("Membership fetch error:", err);
       res.status(500).json({ message: "Failed to fetch memberships" });
     }
   });
 
-  app.post("/api/memberships", isAuthenticated, async (req: any, res) => {
+  app.post("/api/memberships", isAuthenticated, async (req, res) => {
     try {
       const userId = "dev-user";
+      const validated = membershipSchema.parse(req.body);
+
       const membership = await storage.createMembership({
         userId,
-        planName: req.body.planName || "Pure Trading Membership",
-        amount: req.body.amount || 9,
-        currency: req.body.currency || "INR",
+        planName: validated.planName ?? "Pure Trading Membership",
+        amount: validated.amount ?? 9,
+        currency: validated.currency ?? "INR",
         status: "active",
-        paymentId: req.body.paymentId,
+        paymentId: validated.paymentId ?? "",
       });
-      
+
       await storage.updateUserMembership(userId, true);
-      
+
       res.status(201).json(membership);
-    } catch (error) {
-      console.error("Error creating membership:", error);
+    } catch (err: any) {
+      if (err instanceof z.ZodError)
+        return res.status(400).json({ message: "Invalid membership data", errors: err.errors });
+
+      console.error("Membership create error:", err);
       res.status(500).json({ message: "Failed to create membership" });
     }
   });
 
-  // Create Razorpay Order
-app.post("/api/payment/create-order", async (req: any, res) => {
-  try {
-    const amount = req.body.amount ?? 900; // in INR rupees
-    const planName = req.body.planName ?? "Pure Trading Membership";
+  // ------------------------------
+  // RAZORPAY ORDER CREATION
+  // ------------------------------
+  app.post("/api/payment/create-order", async (req: any, res) => {
+    try {
+      const amount = req.body.amount ?? 900;
 
-    const options = {
-      amount: amount * 100, // Razorpay works in paise
-      currency: "INR",
-      receipt: `receipt_${Date.now()}`,
-      notes: {
-        planName,
-      },
-    };
-
-    const order = await razorpay.orders.create(options);
-
-    return res.status(200).json({
-      orderId: order.id,
-      amount: order.amount,
-      currency: order.currency,
-      keyId: process.env.RAZORPAY_KEY_ID,
-    });
-  } catch (error) {
-    console.error("Error creating Razorpay order:", error);
-    return res.status(500).json({ message: "Failed to create order" });
-  }
-});
-
-app.post("/api/payment/webhook", express.raw({ type: "application/json" }), async (req: any, res) => {
-  const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
-  const signature = req.headers["x-razorpay-signature"] as string;
-  const body = req.body; // raw buffer
-
-  const expectedSignature = crypto
-    .createHmac("sha256", secret)
-    .update(body)
-    .digest("hex");
-
-  if (signature !== expectedSignature) {
-    console.error("Invalid webhook signature");
-    return res.status(400).send("Invalid signature");
-  }
-
-  try {
-    const payload = JSON.parse(body.toString());
-
-    if (payload.event === "payment.captured") {
-      const payment = payload.payload.payment.entity;
-
-      const userId = "dev-user"; // later you can map payment.notes.userId
-      const amount = payment.amount / 100;
-
-      const membership = await storage.createMembership({
-        userId,
-        planName: payment.notes?.planName ?? "Pure Trading Membership",
-        amount,
-        currency: payment.currency,
-        status: "active",
-        paymentId: payment.id,
+      const order = await razorpay.orders.create({
+        amount: amount * 100,
+        currency: "INR",
+        receipt: "receipt_" + Date.now(),
+        notes: { planName: req.body.planName ?? "Pure Trading Membership" },
       });
 
-      await storage.updateUserMembership(userId, true);
-
-      console.log("Membership activated:", membership.id);
-    }
-
-    return res.status(200).json({ status: "ok" });
-  } catch (error) {
-    console.error("Error handling webhook:", error);
-    return res.status(500).send("Webhook error");
-  }
-});
-
-  app.get("/api/economic-events", isAuthenticated, async (req, res) => {
-    try {
-      const events = await storage.getEconomicEvents();
-      res.json(events);
-    } catch (error) {
-      console.error("Error fetching economic events:", error);
-      res.status(500).json({ message: "Failed to fetch economic events" });
+      res.json({
+        orderId: order.id,
+        amount: order.amount,
+        currency: order.currency,
+        keyId: process.env.RAZORPAY_KEY_ID,
+      });
+    } catch (err) {
+      console.error("Order create error:", err);
+      res.status(500).json({ message: "Failed to create order" });
     }
   });
 
-  app.get("/api/market-analysis", isAuthenticated, async (req, res) => {
+  // ------------------------------
+  // RAZORPAY WEBHOOK
+  // ------------------------------
+  app.post("/api/payment/webhook", async (req: any, res) => {
     try {
-      const analysis = await storage.getMarketAnalysis();
-      res.json(analysis);
-    } catch (error) {
-      console.error("Error fetching market analysis:", error);
-      res.status(500).json({ message: "Failed to fetch market analysis" });
+      const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
+      const signature = req.headers["x-razorpay-signature"] as string;
+
+      const expected = crypto
+        .createHmac("sha256", secret)
+        .update(req.rawBody)
+        .digest("hex");
+
+      if (signature !== expected) {
+        console.error("Invalid signature");
+        return res.status(400).send("Invalid webhook signature");
+      }
+
+      const event = req.body;
+
+      if (event.event === "payment.captured") {
+        const pay = event.payload.payment.entity;
+        const userId = "dev-user";
+
+        await storage.createMembership({
+          userId,
+          planName: pay.notes?.planName ?? "Pure Trading Membership",
+          amount: pay.amount / 100,
+          currency: pay.currency,
+          status: "active",
+          paymentId: pay.id,
+        });
+
+        await storage.updateUserMembership(userId, true);
+      }
+
+      res.json({ status: "ok" });
+    } catch (err) {
+      console.error("Webhook error:", err);
+      res.status(500).send("Webhook failed");
     }
   });
 
+  // ------------------------------
+  // ECONOMIC + MARKET DATA
+  // ------------------------------
+  app.get("/api/economic-events", isAuthenticated, async (_req, res) => {
+    try {
+      res.json(await storage.getEconomicEvents());
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Failed to fetch events" });
+    }
+  });
+
+  app.get("/api/market-analysis", isAuthenticated, async (_req, res) => {
+    try {
+      res.json(await storage.getMarketAnalysis());
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Failed to fetch analysis" });
+    }
+  });
+
+  // ------------------------------
+  // SERVER INSTANCE
+  // ------------------------------
   const httpServer = createServer(app);
   return httpServer;
-}
-
-export async function setupAuth(app: Express) {
-  // no auth in production for now (accepting app for future use)
 }
