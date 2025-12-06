@@ -3,7 +3,7 @@ import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { isAuthenticated } from "./replitAuth";
+import { isAuthenticated } from "./Auth";
 import { razorpay } from "./payment";
 import crypto from "crypto";
 import { z } from "zod";

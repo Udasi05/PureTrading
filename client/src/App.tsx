@@ -5,9 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
-import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
-import Dashboard from "@/pages/Dashboard";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -16,8 +14,6 @@ function Router() {
     <main className="mt-16">
       <Switch>
         <Route path="/" component={Landing} />
-        <Route path="/dashboard" component={Dashboard} />
-        <Route component={NotFound} />
       </Switch>
     </main>
   );
