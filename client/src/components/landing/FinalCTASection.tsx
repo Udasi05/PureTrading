@@ -2,6 +2,43 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Zap, Briefcase, Plane, Coffee } from "lucide-react";
 
+
+const handleJoin = async () => {
+  try {
+    const res = await fetch("/api/payment/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: 99 }),
+    });
+
+    const data = await res.json();
+
+    const options = {
+      key: data.keyId,
+      amount: data.amount,
+      currency: data.currency,
+      name: "Pure Trading",
+      description: "Membership Purchase",
+      order_id: data.orderId,
+
+      handler: function (response: any) {
+        console.log("Payment success", response);
+        alert("Payment Successful!");
+
+        window.location.href = "/dashboard"; // optional
+      },
+
+      theme: { color: "#10b981" },
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+    rzp.open();
+  } catch (error) {
+    console.error("Payment Error:", error);
+    alert("Something went wrong. Try again!");
+  }
+};
+
 const scenarios = [
   { icon: Briefcase, label: "At Office" },
   { icon: Coffee, label: "At Work" },
@@ -48,6 +85,7 @@ export function FinalCTASection() {
 
         <div className="space-y-4">
           <Button
+            onClick={handleJoin}
             size="lg"
             className="px-10 py-6 text-lg font-semibold animate-pulse-glow"
             asChild
