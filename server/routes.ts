@@ -1,9 +1,13 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { isAuthenticated } from "./replitAuth";
 import { insertSignalSchema } from "@shared/schema";
 import { z } from "zod";
+import { razorpay } from "./payment";
+import crypto from "crypto";
+
 
 export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
@@ -95,6 +99,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to create membership" });
     }
   });
+
+  // Create Razorpay Order
+app.post("/api/payment/create-order", async (req: any, res) => {
+  try {
+    const amount = req.body.amount ?? 900; // in INR rupees
+    const planName = req.body.planName ?? "Pure Trading Membership";
+
+    const options = {
+      amount: amount * 100, // Razorpay works in paise
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+      notes: {
+        planName,
+      },
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    return res.status(200).json({
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      keyId: process.env.RAZORPAY_KEY_ID,
+    });
+  } catch (error) {
+    console.error("Error creating Razorpay order:", error);
+    return res.status(500).json({ message: "Failed to create order" });
+  }
+});
+
+app.post("/api/payment/webhook", express.raw({ type: "application/json" }), async (req: any, res) => {
+  const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
+  const signature = req.headers["x-razorpay-signature"] as string;
+  const body = req.body; // raw buffer
+
+  const expectedSignature = crypto
+    .createHmac("sha256", secret)
+    .update(body)
+    .digest("hex");
+
+  if (signature !== expectedSignature) {
+    console.error("Invalid webhook signature");
+    return res.status(400).send("Invalid signature");
+  }
+
+  try {
+    const payload = JSON.parse(body.toString());
+
+    if (payload.event === "payment.captured") {
+      const payment = payload.payload.payment.entity;
+
+      const userId = "dev-user"; // later you can map payment.notes.userId
+      const amount = payment.amount / 100;
+
+      const membership = await storage.createMembership({
+        userId,
+        planName: payment.notes?.planName ?? "Pure Trading Membership",
+        amount,
+        currency: payment.currency,
+        status: "active",
+        paymentId: payment.id,
+      });
+
+      await storage.updateUserMembership(userId, true);
+
+      console.log("Membership activated:", membership.id);
+    }
+
+    return res.status(200).json({ status: "ok" });
+  } catch (error) {
+    console.error("Error handling webhook:", error);
+    return res.status(500).send("Webhook error");
+  }
+});
 
   app.get("/api/economic-events", isAuthenticated, async (req, res) => {
     try {
