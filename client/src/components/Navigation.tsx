@@ -13,6 +13,42 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+const handleJoin = async () => {
+  try {
+    const res = await fetch("/api/payment/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: 99 }),
+    });
+
+    const data = await res.json();
+
+    const options = {
+      key: data.keyId,
+      amount: data.amount,
+      currency: data.currency,
+      name: "Pure Trading",
+      description: "Membership Purchase",
+      order_id: data.orderId,
+
+      handler: function (response: any) {
+        console.log("Payment success", response);
+        alert("Payment Successful!");
+
+        window.location.href = "/dashboard"; // optional
+      },
+
+      theme: { color: "#10b981" },
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+    rzp.open();
+  } catch (error) {
+    console.error("Payment Error:", error);
+    alert("Something went wrong. Try again!");
+  }
+};
+
 const navLinks = [
   { href: "#features", label: "Features" },
   { href: "#pricing", label: "Pricing" },
@@ -103,24 +139,15 @@ export function Navigation() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a href="/api/logout" className="flex items-center gap-2">
-                      <LogOut className="w-4 h-4" />
-                      Log Out
-                    </a>
-                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className="hidden sm:flex items-center gap-2">
-                <Button asChild data-testid="button-join">
-                  <a href="/api/login">Join at ₹99</a>
+                <Button
+                onClick={handleJoin}
+                asChild
+                data-testid="button-join">
+                  <a>Join at ₹99</a>
                 </Button>
               </div>
             )}
@@ -147,17 +174,11 @@ export function Navigation() {
                   <div className="pt-4 border-t border-border flex flex-col gap-3">
                     {isAuthenticated ? (
                       <>
-                        <Button variant="outline" asChild className="w-full">
-                          <Link href="/dashboard">Dashboard</Link>
-                        </Button>
-                        <Button variant="ghost" asChild className="w-full">
-                          <a href="/api/logout">Log Out</a>
-                        </Button>
                       </>
                     ) : (
                       <>
                         <Button asChild className="w-full">
-                          <a href="/api/login">Join at ₹99</a>
+                          <a>Join at ₹99</a>
                         </Button>
                       </>
                     )}

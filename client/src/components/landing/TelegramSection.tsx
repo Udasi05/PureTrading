@@ -4,6 +4,43 @@ import { Badge } from "@/components/ui/badge";
 import { Bell, Zap, Clock, Shield, ArrowRight } from "lucide-react";
 import { SiTelegram } from "react-icons/si";
 
+
+const handleJoin = async () => {
+  try {
+    const res = await fetch("/api/payment/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: 99 }),
+    });
+
+    const data = await res.json();
+
+    const options = {
+      key: data.keyId,
+      amount: data.amount,
+      currency: data.currency,
+      name: "Pure Trading",
+      description: "Membership Purchase",
+      order_id: data.orderId,
+
+      handler: function (response: any) {
+        console.log("Payment success", response);
+        alert("Payment Successful!");
+
+        window.location.href = "/dashboard"; // optional
+      },
+
+      theme: { color: "#10b981" },
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+    rzp.open();
+  } catch (error) {
+    console.error("Payment Error:", error);
+    alert("Something went wrong. Try again!");
+  }
+};
+
 const telegramFeatures = [
   {
     icon: Bell,
@@ -63,11 +100,14 @@ export function TelegramSection() {
               ))}
             </div>
 
-            <Button asChild data-testid="button-telegram-cta">
-              <a href="/api/login">
+            <Button
+            onClick={handleJoin}
+            asChild
+            data-testid="button-telegram-cta">
+              <a>
                 Join Telegram Channel
                 <ArrowRight className="w-4 h-4 ml-2" />
-              </a>
+                </a>
             </Button>
           </div>
         </div>

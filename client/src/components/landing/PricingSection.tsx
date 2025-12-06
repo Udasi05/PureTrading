@@ -13,6 +13,42 @@ import {
 } from "lucide-react";
 import { SiTelegram } from "react-icons/si";
 
+
+const handleJoin = async () => {
+  try {
+    const res = await fetch("/api/payment/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: 99 }),
+    });
+
+    const data = await res.json();
+
+    const options = {
+      key: data.keyId,
+      amount: data.amount,
+      currency: data.currency,
+      name: "Pure Trading",
+      description: "Membership Purchase",
+      order_id: data.orderId,
+
+      handler: function (response: any) {
+        console.log("Payment success", response);
+        alert("Payment Successful!");
+
+        window.location.href = "/dashboard"; // optional
+      },
+
+      theme: { color: "#10b981" },
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+    rzp.open();
+  } catch (error) {
+    console.error("Payment Error:", error);
+    alert("Something went wrong. Try again!");
+  }
+};
 const benefits = [
   {
     icon: BookOpen,
@@ -120,12 +156,13 @@ export function PricingSection() {
             </div>
 
             <Button
+              onClick={handleJoin}
               size="lg"
               className="w-full py-6 text-lg font-semibold"
               asChild
               data-testid="button-pricing-cta"
             >
-              <a href="/api/login">
+              <a>
                 Get Started Now - ₹99 Only
               </a>
             </Button>

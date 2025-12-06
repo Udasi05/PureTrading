@@ -91,7 +91,7 @@ export function FinalCTASection() {
             asChild
             data-testid="button-final-cta"
           >
-            <a href="/api/login">
+            <a>
               Join Pure Trading at ₹99
               <ArrowRight className="w-5 h-5 ml-2" />
             </a>
