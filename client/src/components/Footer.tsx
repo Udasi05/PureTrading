@@ -23,10 +23,10 @@ export function Footer() {
           <div className="flex items-center gap-4">
             <Mail className="w-5 h-5" />
             <a
-              href="mailto:support@puretrading.com"
+              href="mailto:pure.trading2727@gmail.com"
               className="text-white hover:underline"
             >
-              support@puretrading.in
+              pure.trading2727@gmail.com
             </a>
           </div>
           </div>
@@ -61,9 +61,24 @@ export function Footer() {
           <p className="text-sm text-muted-foreground" data-testid="text-copyright">
             © {currentYear} Pure Trading. All rights reserved.
           </p>
+          <div className="flex items-center gap-6">
+            <a
+              href="#"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Language"
+            >
+              <Globe className="w-5 h-5" />
+            </a>
+          </div>
+        </div>
+
+        <div className="mt-6">
           <p className="text-xs text-muted-foreground">
-            Trading involves risk. Past performance is not indicative of future results.
+            Disclaimer: This website is for educational purposes only.
+            We do not provide investment advice, stock tips, or personalized financial recommendations.
+            Trading in financial markets involves risk. Past performance is not indicative of future results.
           </p>
+
         </div>
       </div>
     </footer>

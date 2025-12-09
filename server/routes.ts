@@ -7,7 +7,7 @@ import { isAuthenticated } from "./Auth";
 import { razorpay } from "./payment";
 import crypto from "crypto";
 import { z } from "zod";
-
+import { sendMembershipEmail } from "./email";
 // ------------------------------
 // ZOD VALIDATION SCHEMAS
 // ------------------------------
@@ -158,45 +158,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // RAZORPAY WEBHOOK
   // ------------------------------
   app.post("/api/payment/webhook", async (req: any, res) => {
-    try {
-      const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
-      const signature = req.headers["x-razorpay-signature"] as string;
+  try {
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
+    const signature = req.headers["x-razorpay-signature"] as string;
 
-      const expected = crypto
-        .createHmac("sha256", secret)
-        .update(req.rawBody)
-        .digest("hex");
+    const expected = crypto
+      .createHmac("sha256", secret)
+      .update(req.rawBody)
+      .digest("hex");
 
-      if (signature !== expected) {
-        console.error("Invalid signature");
-        return res.status(400).send("Invalid webhook signature");
-      }
-
-      const event = req.body;
-
-      if (event.event === "payment.captured") {
-        const pay = event.payload.payment.entity;
-        const userId = "dev-user";
-
-        await storage.createMembership({
-          userId,
-          planName: pay.notes?.planName ?? "Pure Trading Membership",
-          amount: pay.amount / 100,
-          currency: pay.currency,
-          status: "active",
-          paymentId: pay.id,
-        });
-
-        await storage.updateUserMembership(userId, true);
-      }
-
-      res.json({ status: "ok" });
-    } catch (err) {
-      console.error("Webhook error:", err);
-      res.status(500).send("Webhook failed");
+    if (signature !== expected) {
+      console.error("Invalid signature");
+      return res.status(400).send("Invalid webhook signature");
     }
-  });
 
+    const event = req.body;
+
+    if (event.event === "payment.captured") {
+      const pay = event.payload.payment.entity;
+      const userId = "dev-user"; // for now
+
+      // Store membership
+      await storage.createMembership({
+        userId,
+        planName: pay.notes?.planName ?? "Pure Trading Membership",
+        amount: pay.amount / 100,
+        currency: pay.currency,
+        status: "active",
+        paymentId: pay.id,
+      });
+
+      await storage.updateUserMembership(userId, true);
+
+      // --------------------------------
+      // SEND EMAIL AFTER SUCCESS PAYMENT
+      // --------------------------------
+      const userEmail = pay.email; // Razorpay automatically gives email
+      await sendMembershipEmail(userEmail, pay.id);
+
+      console.log("🎉 Email sent to:", userEmail);
+    }
+
+    res.json({ status: "ok" });
+  } catch (err) {
+    console.error("Webhook error:", err);
+    res.status(500).send("Webhook failed");
+  }
+});
   // ------------------------------
   // ECONOMIC + MARKET DATA
   // ------------------------------

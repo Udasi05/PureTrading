@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/Landing";
+import ThankYou from "@/pages/ThankYou";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -14,6 +15,7 @@ function Router() {
     <main className="mt-16">
       <Switch>
         <Route path="/" component={Landing} />
+        <Route path="/thank-you" component={ThankYou} />
       </Switch>
     </main>
   );

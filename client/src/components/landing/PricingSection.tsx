@@ -16,14 +16,21 @@ import { SiTelegram } from "react-icons/si";
 
 const handleJoin = async () => {
   try {
+    // 1. Create Razorpay order from your backend
     const res = await fetch("/api/payment/create-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: 99 }),
+      body: JSON.stringify({ amount: 99, planName: "Pure Trading Membership" }),
     });
 
     const data = await res.json();
 
+    if (!data.orderId) {
+      alert("Failed to create payment order.");
+      return;
+    }
+
+    // 2. Razorpay Checkout Options
     const options = {
       key: data.keyId,
       amount: data.amount,
@@ -33,22 +40,37 @@ const handleJoin = async () => {
       order_id: data.orderId,
 
       handler: function (response: any) {
-        console.log("Payment success", response);
-        alert("Payment Successful!");
+        console.log("Payment success:", response);
 
-        window.location.href = "/dashboard"; // optional
+        // Redirect → Your thank you or dashboard
+        window.location.href =
+          "/thank-you?paymentId=" + response.razorpay_payment_id;
+      },
+
+      modal: {
+        ondismiss: function () {
+          alert("Payment cancelled. You can try again anytime.");
+        },
       },
 
       theme: { color: "#10b981" },
     };
 
-    const rzp = new (window as any).Razorpay(options);
-    rzp.open();
+    // 3. Open Razorpay popup
+    const razor = new (window as any).Razorpay(options);
+
+    razor.on("payment.failed", function (response: any) {
+      console.log("Payment failed:", response.error);
+      alert("Payment Failed: " + response.error.description);
+    });
+
+    razor.open();
   } catch (error) {
     console.error("Payment Error:", error);
-    alert("Something went wrong. Try again!");
+    alert("Something went wrong. Try again later!");
   }
 };
+
 const benefits = [
   {
     icon: BookOpen,
@@ -126,7 +148,6 @@ export function PricingSection() {
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-5xl font-bold text-gradient">₹99</span>
-                  <span className="text-muted-foreground">/Month</span>
                 </div>
               </div>
               
