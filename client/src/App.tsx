@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/Landing";
 import ThankYou from "@/pages/ThankYou";
+import React from "react";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();

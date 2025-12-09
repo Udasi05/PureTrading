@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, ExternalLink, AlertTriangle, TrendingUp, Clock } from "lucide-react";
+import React from "react";
 
 
 const getImpactColor = (impact: string) => {

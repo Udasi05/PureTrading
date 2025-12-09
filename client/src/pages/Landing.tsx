@@ -8,6 +8,7 @@ import { SessionsSection } from "@/components/landing/SessionsSection";
 import { TelegramSection } from "@/components/landing/TelegramSection";
 import { EconomicCalendarSection } from "@/components/landing/EconomicCalendarSection";
 import { FinalCTASection } from "@/components/landing/FinalCTASection";
+import React from "react";
 
 export default function Landing() {
   return (

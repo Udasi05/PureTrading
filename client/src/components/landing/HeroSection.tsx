@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, TrendingUp, Users, Clock, Zap } from "lucide-react";
 import { useRazorpayPayment } from "@/hooks/useRazorpayPayment";
+import React from "react";
 
 const handleJoin = async () => {
   try {

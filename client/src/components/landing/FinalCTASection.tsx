@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Zap, Briefcase, Plane, Coffee } from "lucide-react";
+import React from "react";
 
 
 const handleJoin = async () => {
