@@ -8,6 +8,65 @@ import {
   ArrowRight,
   Zap
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import React from "react";
+
+const handleJoin = async () => {
+  try {
+    // 1. Create Razorpay order from your backend
+    const res = await fetch("/api/payment/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: 99, planName: "Pure Trading Membership" }),
+    });
+
+    const data = await res.json();
+
+    if (!data.orderId) {
+      alert("Failed to create payment order.");
+      return;
+    }
+
+    // 2. Razorpay Checkout Options
+    const options = {
+      key: data.keyId,
+      amount: data.amount,
+      currency: data.currency,
+      name: "Pure Trading",
+      description: "Membership Purchase",
+      order_id: data.orderId,
+
+      handler: function (response: any) {
+        console.log("Payment success:", response);
+
+        // Redirect → Your thank you or dashboard
+        window.location.href =
+          "/thank-you?paymentId=" + response.razorpay_payment_id;
+      },
+
+      modal: {
+        ondismiss: function () {
+          alert("Payment cancelled. You can try again anytime.");
+        },
+      },
+
+      theme: { color: "#10b981" },
+    };
+
+    // 3. Open Razorpay popup
+    const razor = new (window as any).Razorpay(options);
+
+    razor.on("payment.failed", function (response: any) {
+      console.log("Payment failed:", response.error);
+      alert("Payment Failed: " + response.error.description);
+    });
+
+    razor.open();
+  } catch (error) {
+    console.error("Payment Error:", error);
+    alert("Something went wrong. Try again later!");
+  }
+};
 
 const problems = [
   {
@@ -118,10 +177,11 @@ export function ProblemSolutionSection() {
               </Card>
             ))}
 
-            <div className="flex items-center justify-center gap-2 pt-4 text-primary">
-              <span className="font-semibold">Transform your trading today</span>
+            <Button
+              onClick={handleJoin}>
+              Transform your trading today
               <ArrowRight className="w-4 h-4" />
-            </div>
+            </Button>
           </div>
         </div>
       </div>

@@ -1,9 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, ExternalLink, AlertTriangle, TrendingUp, Clock } from "lucide-react";
-import React from "react";
-
-
+import { Calendar,  AlertTriangle, TrendingUp} from "lucide-react";
 const getImpactColor = (impact: string) => {
   switch (impact) {
     case "high":
