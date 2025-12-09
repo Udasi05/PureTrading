@@ -35,7 +35,7 @@ const handleJoin = async () => {
         console.log("Payment success", response);
         alert("Payment Successful!");
 
-        window.location.href = "/dashboard"; // optional
+        window.location.href = "/Thankyou"; // optional
       },
 
       theme: { color: "#10b981" },

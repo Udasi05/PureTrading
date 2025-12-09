@@ -4,17 +4,21 @@ import { CheckCircle, Download, Send } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function ThankYou() {
+  // Wouter hook
   const [location] = useLocation();
 
-  // Extract paymentId from ?paymentId=XYZ
-  const paymentId = new URLSearchParams(location.split("?")[1]).get("paymentId");
+  // Get paymentId manually from URL
+  const paymentId = new URLSearchParams(window.location.search).get("paymentId");
 
   const [timer, setTimer] = useState(10);
 
+  // Auto redirect after 10 sec
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer((t) => {
-        if (t <= 1) window.location.href = "/dashboard";
+        if (t <= 1) {
+          window.location.href = "/thank-you"; // Change to your dashboard URL
+        }
         return t - 1;
       });
     }, 1000);
@@ -46,7 +50,6 @@ export default function ThankYou() {
           </div>
         )}
 
-        {/* DOWNLOADS */}
         <div className="space-y-3">
           <Button
             variant="secondary"
