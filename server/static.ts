@@ -3,8 +3,8 @@ import express from "express";
 import path from "path";
 
 export function serveStatic(app: Express) {
-  const distPath = path.join(import.meta.dirname, "..", "dist", "public");
-  const indexFile = path.join(distPath, "index.html");
+  const distPath = path.join(process.cwd(), "dist", "public");  // FIXED PATH
+  const indexFile = path.join(distPath, "index.html");          // FIXED PATH
 
   app.use(express.static(distPath));
 
