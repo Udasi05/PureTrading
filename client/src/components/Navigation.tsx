@@ -177,7 +177,9 @@ export function Navigation() {
                       </>
                     ) : (
                       <>
-                        <Button asChild className="w-full">
+                        <Button
+                        onClick={handleJoin}
+                        asChild className="w-full">
                           <a>Join at ₹99</a>
                         </Button>
                       </>
