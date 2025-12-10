@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, Send } from "lucide-react";
-import { useLocation } from "wouter";
 
 export default function ThankYou() {
-  // Wouter hook
-  const [location] = useLocation();
 
   // Get paymentId manually from URL
   const paymentId = new URLSearchParams(window.location.search).get("paymentId");
-
   const [timer, setTimer] = useState(10);
 
   // Auto redirect after 10 sec
@@ -81,15 +77,11 @@ export default function ThankYou() {
 
         <Button
           className="w-full mt-6 bg-green-500 hover:bg-green-600 text-black font-semibold"
-          onClick={() => window.open("YOUR_TELEGRAM_INVITE_LINK", "_blank")}
+          onClick={() => window.open("https://t.me/+qJEPE2RxT1o2ZDFl", "_blank")}
         >
           Join Telegram Community
           <Send className="ml-2 w-4 h-4" />
         </Button>
-
-        <p className="text-center text-gray-400 text-sm mt-6">
-          Redirecting to dashboard in <span className="text-green-400">{timer}</span> seconds...
-        </p>
       </div>
     </div>
   );

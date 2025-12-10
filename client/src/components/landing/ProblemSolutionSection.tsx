@@ -10,63 +10,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import React from "react";
+import { usePopup } from "@/context/PopupContext";
 
-const handleJoin = async () => {
-  try {
-    // 1. Create Razorpay order from your backend
-    const res = await fetch("/api/payment/create-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: 99, planName: "Pure Trading Membership" }),
-    });
-
-    const data = await res.json();
-
-    if (!data.orderId) {
-      alert("Failed to create payment order.");
-      return;
-    }
-
-    // 2. Razorpay Checkout Options
-    const options = {
-      key: data.keyId,
-      amount: data.amount,
-      currency: data.currency,
-      name: "Pure Trading",
-      description: "Membership Purchase",
-      order_id: data.orderId,
-
-      handler: function (response: any) {
-        console.log("Payment success:", response);
-
-        // Redirect → Your thank you or dashboard
-        window.location.href =
-          "/thank-you?paymentId=" + response.razorpay_payment_id;
-      },
-
-      modal: {
-        ondismiss: function () {
-          alert("Payment cancelled. You can try again anytime.");
-        },
-      },
-
-      theme: { color: "#10b981" },
-    };
-
-    // 3. Open Razorpay popup
-    const razor = new (window as any).Razorpay(options);
-
-    razor.on("payment.failed", function (response: any) {
-      console.log("Payment failed:", response.error);
-      alert("Payment Failed: " + response.error.description);
-    });
-
-    razor.open();
-  } catch (error) {
-    console.error("Payment Error:", error);
-    alert("Something went wrong. Try again later!");
-  }
-};
 
 const problems = [
   {
@@ -93,7 +38,7 @@ const problems = [
 
 const solutions = [
   {
-    title: "Professional Signals",
+    title: "Professional analysis",
     description: "Get precise entry/exit points with detailed lot sizes and stop loss levels",
   },
   {
@@ -102,7 +47,7 @@ const solutions = [
   },
   {
     title: "Perfect Risk Management",
-    description: "Each signal comes with calculated risk:reward ratios for both (propfirms & real accounts)",
+    description: "Each analysis comes with calculated risk:reward ratios for both (propfirms & real accounts)",
   },
   {
     title: "Daily Market Overview",
@@ -111,6 +56,59 @@ const solutions = [
 ];
 
 export function ProblemSolutionSection() {
+  const { openPopup } = usePopup();
+  const handleUserDetails = async ({ name, email, phone }: any) => {
+    try {
+      const resUser = await fetch("/api/user/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, phone }),
+      });
+
+      const dataUser = await resUser.json();
+      const userId = dataUser.userId;
+
+      const res = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: 99,
+          planName: "Pure Trading Membership",
+          userId,
+        }),
+      });
+
+      const data = await res.json();
+
+      const razorpay = new (window as any).Razorpay({
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Pure Trading",
+        description: "Membership Purchase",
+        order_id: data.orderId,
+
+        handler: function (response: any) {
+          window.location.href =
+            "/thank-you?paymentId=" + response.razorpay_payment_id;
+        },
+
+        prefill: {
+          name,
+          email,
+          contact: phone,
+        },
+
+        theme: { color: "#10b981" },
+      });
+
+      razorpay.open();
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong!");
+    }
+  };
+
   return (
     <section id="features" className="py-24 bg-card/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -178,7 +176,7 @@ export function ProblemSolutionSection() {
             ))}
 
             <Button
-              onClick={handleJoin}>
+              onClick={() => openPopup(handleUserDetails)}>
               Transform your trading today
               <ArrowRight className="w-4 h-4" />
             </Button>

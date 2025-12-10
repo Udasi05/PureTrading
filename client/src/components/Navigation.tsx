@@ -12,42 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const handleJoin = async () => {
-  try {
-    const res = await fetch("/api/payment/create-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: 99 }),
-    });
-
-    const data = await res.json();
-
-    const options = {
-      key: data.keyId,
-      amount: data.amount,
-      currency: data.currency,
-      name: "Pure Trading",
-      description: "Membership Purchase",
-      order_id: data.orderId,
-
-      handler: function (response: any) {
-        console.log("Payment success", response);
-        alert("Payment Successful!");
-
-        window.location.href = "/Thankyou"; // optional
-      },
-
-      theme: { color: "#10b981" },
-    };
-
-    const rzp = new (window as any).Razorpay(options);
-    rzp.open();
-  } catch (error) {
-    console.error("Payment Error:", error);
-    alert("Something went wrong. Try again!");
-  }
-};
+import { usePopup } from "@/context/PopupContext";
 
 const navLinks = [
   { href: "#features", label: "Features" },
@@ -58,12 +23,65 @@ const navLinks = [
 ];
 
 export function Navigation() {
+  const { openPopup } = usePopup();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { user, isAuthenticated } = useAuth();
   const [location] = useLocation();
 
+
+  const handleUserDetails = async ({ name, email, phone }: any) => {
+    try {
+      const resUser = await fetch("/api/user/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, phone }),
+      });
+
+      const dataUser = await resUser.json();
+      const userId = dataUser.userId;
+
+      const res = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: 99,
+          planName: "Pure Trading Membership",
+          userId,
+        }),
+      });
+
+      const data = await res.json();
+
+      const razorpay = new (window as any).Razorpay({
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Pure Trading",
+        description: "Membership Purchase",
+        order_id: data.orderId,
+
+        handler: function (response: any) {
+          window.location.href =
+            "/thank-you?paymentId=" + response.razorpay_payment_id;
+        },
+
+        prefill: {
+          name,
+          email,
+          contact: phone,
+        },
+
+        theme: { color: "#10b981" },
+      });
+
+      razorpay.open();
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong!");
+    }
+  };
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -144,7 +162,7 @@ export function Navigation() {
             ) : (
               <div className="hidden sm:flex items-center gap-2">
                 <Button
-                onClick={handleJoin}
+                onClick={() => openPopup(handleUserDetails)}
                 asChild
                 data-testid="button-join">
                   <a>Join at ₹99</a>
@@ -178,7 +196,7 @@ export function Navigation() {
                     ) : (
                       <>
                         <Button
-                        onClick={handleJoin}
+                        onClick={() => openPopup(handleUserDetails)}
                         asChild className="w-full">
                           <a>Join at ₹99</a>
                         </Button>

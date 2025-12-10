@@ -116,7 +116,7 @@ try {
                 </h1>
                 <p style="margin: 0 0 10px; font-size: 14px; color: #9ca3af; line-height: 1.6;">
                     Your <strong>Pure Trading Premium</strong> membership is now live.  
-                    You’ve just unlocked professional trading guidance, forex signals, and structured learning.
+                    You’ve just unlocked professional trading guidance, forex analysis, and structured learning.
                 </p>
                 </td>
             </tr>
@@ -171,7 +171,7 @@ try {
                     📢 Join the Private Telegram Community
                 </h2>
                 <p style="margin: 0 0 12px; font-size: 13px; color: #9ca3af; line-height: 1.6;">
-                    Get daily updates, live market insights, and signals directly on Telegram.
+                    Get daily updates, live market insights, and analysis directly on Telegram.
                 </p>
                 <div style="text-align: left; margin-bottom: 4px;">
                     <a href="YOUR_TELEGRAM_LINK" target="_blank" class="btn-primary">
@@ -197,7 +197,7 @@ try {
                 <ol style="padding-left: 18px; margin: 0 0 12px; font-size: 13px; color: #d1d5db;">
                     <li>Download all 3 PDFs and go through them step-by-step.</li>
                     <li>Join the private Telegram channel using the button above.</li>
-                    <li>Watch for daily signals and updates from the Pure Trading team.</li>
+                    <li>Watch for daily analysis and updates from the Pure Trading team.</li>
                 </ol>
 
                 <p style="margin: 0 0 6px; font-size: 12px; color: #6b7280;">

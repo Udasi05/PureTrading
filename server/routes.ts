@@ -93,7 +93,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ------------------------------
   app.get("/api/memberships", isAuthenticated, async (_req, res) => {
     try {
-      const userId = "dev-user";
+      const userId = "user-id"; // Replace with actual user ID from auth
       const data = await storage.getMemberships(userId);
       res.json(data);
     } catch (err) {
@@ -104,13 +104,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/memberships", isAuthenticated, async (req, res) => {
     try {
-      const userId = "dev-user";
+      const userId = "user-id"; // Replace with actual user ID from auth
       const validated = membershipSchema.parse(req.body);
 
       const membership = await storage.createMembership({
         userId,
         planName: validated.planName ?? "Pure Trading Membership",
-        amount: validated.amount ?? 9,
+        amount: validated.amount ?? 99,
         currency: validated.currency ?? "INR",
         status: "active",
         paymentId: validated.paymentId ?? "",
@@ -132,6 +132,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // RAZORPAY ORDER CREATION
   // ------------------------------
   app.post("/api/payment/create-order", async (req: any, res) => {
+    console.log("📌 ORDER RECEIVED USERID:", req.body.userId);
     try {
       const amount = req.body.amount ?? 900;
 
@@ -139,8 +140,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amount: amount * 100,
         currency: "INR",
         receipt: "receipt_" + Date.now(),
-        notes: { planName: req.body.planName ?? "Pure Trading Membership" },
+        notes: { planName: req.body.planName ?? "Pure Trading Membership",
+          userId: String(req.body.userId || "")
+        },
       });
+
+      console.log("📌 RAZORPAY ORDER NOTES:", order.notes);
 
       res.json({
         orderId: order.id,
@@ -153,6 +158,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to create order" });
     }
   });
+
+  // ------------------------------
+// CREATE USER BEFORE PAYMENT
+// ------------------------------
+app.post("/api/user/create", async (req, res) => {
+  try {
+    const { name, email, phone, paymentID } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    // Create user using email as ID
+    const user = await storage.upsertUser({
+      id: email,
+      email,
+      firstName: name,
+      phone,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      paymentID: paymentID
+    });
+
+    res.json({ userId: user.id });
+
+  } catch (err) {
+    console.error("User create error:", err);
+    res.status(500).json({ message: "Failed to create user" });
+  }
+});
 
   // ------------------------------
   // RAZORPAY WEBHOOK
@@ -176,7 +211,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     if (event.event === "payment.captured") {
       const pay = event.payload.payment.entity;
-      const userId = "dev-user"; // for now
+      console.log("📌 WEBHOOK PAYMENT NOTES:", pay.notes);
+      console.log("📌 WEBHOOK USERID:", pay.notes?.userId);
+
+      const userId = pay.notes?.userId;
+        if (!userId) {
+          console.error("❌ ERROR: Missing userId in Razorpay notes");
+        return res.status(400).send("userId missing");
+        }
+
 
       // Store membership
       await storage.createMembership({
@@ -188,7 +231,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         paymentId: pay.id,
       });
 
-      await storage.updateUserMembership(userId, true);
+      await storage.updateUserMembership(userId, true, pay.id);
+
 
       // --------------------------------
       // SEND EMAIL AFTER SUCCESS PAYMENT
@@ -205,27 +249,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(500).send("Webhook failed");
   }
 });
-  // ------------------------------
-  // ECONOMIC + MARKET DATA
-  // ------------------------------
-  app.get("/api/economic-events", isAuthenticated, async (_req, res) => {
-    try {
-      res.json(await storage.getEconomicEvents());
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Failed to fetch events" });
-    }
-  });
-
-  app.get("/api/market-analysis", isAuthenticated, async (_req, res) => {
-    try {
-      res.json(await storage.getMarketAnalysis());
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Failed to fetch analysis" });
-    }
-  });
-
   // ------------------------------
   // SERVER INSTANCE
   // ------------------------------

@@ -15,7 +15,7 @@ const instruments = [
   },
   {
     name: "Gold (XAUUSD)",
-    description: "Spot Gold trading signals",
+    description: "Spot Gold trading analysis",
     pairs: ["XAU/USD"],
     icon: () => (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
@@ -28,7 +28,7 @@ const instruments = [
   },
   {
     name: "Silver (XAGUSD)",
-    description: "Spot Silver trading signals",
+    description: "Spot Silver trading analysis",
     pairs: ["XAG/USD"],
     icon: () => (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
@@ -64,7 +64,7 @@ export function InstrumentsSection() {
             Instruments We Cover Daily
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Comprehensive analysis and signals across all major trading instruments
+            Comprehensive analysis and analysis across all major trading instruments
           </p>
         </div>
 

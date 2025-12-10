@@ -42,7 +42,7 @@ export function SessionsSection() {
             24/7 Coverage
           </Badge>
           <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">
-            Signals Across All Sessions
+            analysis Across All Sessions
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             We cover every major trading session so you never miss a profitable opportunity
@@ -91,7 +91,7 @@ export function SessionsSection() {
             </div>
             <div className="text-left">
               <p className="font-semibold">Trade at Office, Work, Travel - Anywhere!</p>
-              <p className="text-sm text-muted-foreground">No analysis stress. Just execute our signals.</p>
+              <p className="text-sm text-muted-foreground">No analysis stress. Just execute our analysis.</p>
             </div>
           </Card>
         </div>

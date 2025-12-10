@@ -26,7 +26,7 @@ export function EconomicCalendarSection() {
               Stay Ahead of Market-Moving News
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              We monitor all major economic events and factor them into our signals. 
+              We monitor all major economic events and factor them into our analysis. 
               Never get caught off-guard by high-impact news releases.
             </p>
 
@@ -50,7 +50,7 @@ export function EconomicCalendarSection() {
                 <div>
                   <p className="font-medium">News-Based Trading Opportunities</p>
                   <p className="text-sm text-muted-foreground">
-                    Get signals designed to capitalize on major economic releases
+                    Get analysis designed to capitalize on major economic releases
                   </p>
                 </div>
               </div>

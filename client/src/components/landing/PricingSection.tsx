@@ -12,104 +12,102 @@ import {
   Crown
 } from "lucide-react";
 import { SiTelegram } from "react-icons/si";
-
-
-const handleJoin = async () => {
-  try {
-    // 1. Create Razorpay order from your backend
-    const res = await fetch("/api/payment/create-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: 99, planName: "Pure Trading Membership" }),
-    });
-
-    const data = await res.json();
-
-    if (!data.orderId) {
-      alert("Failed to create payment order.");
-      return;
-    }
-
-    // 2. Razorpay Checkout Options
-    const options = {
-      key: data.keyId,
-      amount: data.amount,
-      currency: data.currency,
-      name: "Pure Trading",
-      description: "Membership Purchase",
-      order_id: data.orderId,
-
-      handler: function (response: any) {
-        console.log("Payment success:", response);
-
-        // Redirect → Your thank you or dashboard
-        window.location.href =
-          "/thank-you?paymentId=" + response.razorpay_payment_id;
-      },
-
-      modal: {
-        ondismiss: function () {
-          alert("Payment cancelled. You can try again anytime.");
-        },
-      },
-
-      theme: { color: "#10b981" },
-    };
-
-    // 3. Open Razorpay popup
-    const razor = new (window as any).Razorpay(options);
-
-    razor.on("payment.failed", function (response: any) {
-      console.log("Payment failed:", response.error);
-      alert("Payment Failed: " + response.error.description);
-    });
-
-    razor.open();
-  } catch (error) {
-    console.error("Payment Error:", error);
-    alert("Something went wrong. Try again later!");
-  }
-};
-
-const benefits = [
-  {
-    icon: BookOpen,
-    title: "3 Premium Ebooks",
-    description: "Comprehensive trading guides for beginners to advanced",
-  },
-  {
-    icon: FileText,
-    title: "Technical Analysis PDF",
-    description: "Market structure, liquidity, swap & sweep methods explained",
-  },
-  {
-    icon: Target,
-    title: "Daily Trading Signals",
-    description: "With lot sizes, entry, exit, and stop loss levels",
-  },
-  {
-    icon: Shield,
-    title: "Perfect Risk Management",
-    description: "Each signal comes with calculated risk:reward ratios for both (propfirms & real accounts)",
-  },
-  {
-    icon: TrendingUp,
-    title: "Trade Rationale",
-    description: "Understand the 'why' behind every trade setup",
-  },
-  {
-    icon: SiTelegram,
-    title: "Telegram Delivery",
-    description: "Instant signal notifications on your phone",
-  },
-  {
-    icon: Zap,
-    title: "Real-time Updates",
-    description: "Trade management and target updates",
-  },
-];
+import { usePopup } from "@/context/PopupContext";
 
 export function PricingSection() {
+  const { openPopup } = usePopup();
+
+  // SAME handler used in HeroSection & FinalCTASection
+  const handleUserDetails = async ({ name, email, phone }: any) => {
+    try {
+      const resUser = await fetch("/api/user/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, phone }),
+      });
+
+      const dataUser = await resUser.json();
+      const userId = dataUser.userId;
+
+      const res = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: 99,
+          planName: "Pure Trading Membership",
+          userId,
+        }),
+      });
+
+      const data = await res.json();
+
+      const razorpay = new (window as any).Razorpay({
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Pure Trading",
+        description: "Membership Purchase",
+        order_id: data.orderId,
+
+        handler: function (response: any) {
+          window.location.href =
+            "/thank-you?paymentId=" + response.razorpay_payment_id;
+        },
+
+        prefill: {
+          name,
+          email,
+          contact: phone,
+        },
+
+        theme: { color: "#10b981" },
+      });
+
+      razorpay.open();
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong!");
+    }
+  };
+
+  const benefits = [
+    {
+      icon: BookOpen,
+      title: "3 Premium Ebooks",
+      description: "Comprehensive trading guides for all levels",
+    },
+    {
+      icon: FileText,
+      title: "Technical Analysis PDF",
+      description: "Market structure, liquidity, sweep methods",
+    },
+    {
+      icon: Target,
+      title: "Daily Trading Analysis",
+      description: "Entries, exits, & stop loss levels",
+    },
+    {
+      icon: Shield,
+      title: "Risk Management",
+      description: "Perfect RR for prop firms & real accounts",
+    },
+    {
+      icon: TrendingUp,
+      title: "Trade Rationale",
+      description: "Understand the logic behind each setup",
+    },
+    {
+      icon: SiTelegram,
+      title: "Telegram Alerts",
+      description: "Instant notifications",
+    },
+    {
+      icon: Zap,
+      title: "Real-time Updates",
+      description: "Live target & management updates",
+    },
+  ];
+
   return (
     <section id="pricing" className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 opacity-30">
@@ -131,7 +129,8 @@ export function PricingSection() {
         </div>
 
         <div className="max-w-lg mx-auto">
-          <Card className="relative p-8 border-primary/50 glow-primary overflow-visible" data-testid="pricing-card">
+          <Card className="relative p-8 border-primary/50 glow-primary overflow-visible">
+            
             <div className="absolute -top-4 left-1/2 -translate-x-1/2">
               <Badge className="px-4 py-1 bg-primary text-primary-foreground">
                 Most Popular
@@ -139,18 +138,20 @@ export function PricingSection() {
             </div>
 
             <div className="text-center mb-8">
-              <h3 className="font-heading text-2xl font-bold mb-2">Pure Trading Membership</h3>
-              <p className="text-muted-foreground">Complete trading signals package</p>
-              
+              <h3 className="font-heading text-2xl font-bold mb-2">
+                Pure Trading Membership
+              </h3>
+              <p className="text-muted-foreground">
+                Complete trading analysis package
+              </p>
+
               <div className="mt-6 flex items-center justify-center gap-4">
-                <div className="flex items-baseline">
-                  <span className="text-2xl text-muted-foreground line-through">₹4999</span>
-                </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-5xl font-bold text-gradient">₹99</span>
-                </div>
+                <span className="text-2xl text-muted-foreground line-through">
+                  ₹4999
+                </span>
+                <span className="text-5xl font-bold text-gradient">₹99</span>
               </div>
-              
+
               <Badge variant="destructive" className="mt-3">
                 <Zap className="w-3 h-3 mr-1" />
                 98% Discount - Limited Time!
@@ -158,34 +159,30 @@ export function PricingSection() {
             </div>
 
             <div className="space-y-4 mb-8">
-              {benefits.map((benefit, index) => (
+              {benefits.map((b, i) => (
                 <div
-                  key={index}
+                  key={i}
                   className="flex items-start gap-3 p-3 rounded-lg bg-muted/30"
-                  data-testid={`benefit-item-${index}`}
                 >
-                  <div className="w-8 h-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                    <benefit.icon className="w-4 h-4 text-primary" />
+                  <div className="w-8 h-8 bg-primary/10 rounded-md flex items-center justify-center">
+                    <b.icon className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="font-medium text-sm">{benefit.title}</p>
-                    <p className="text-xs text-muted-foreground">{benefit.description}</p>
+                    <p className="font-medium text-sm">{b.title}</p>
+                    <p className="text-xs text-muted-foreground">{b.description}</p>
                   </div>
-                  <Check className="w-4 h-4 text-primary ml-auto shrink-0" />
+                  <Check className="w-4 h-4 text-primary ml-auto" />
                 </div>
               ))}
             </div>
 
+            {/* FIXED JOIN BUTTON */}
             <Button
-              onClick={handleJoin}
+              onClick={() => openPopup(handleUserDetails)}
               size="lg"
               className="w-full py-6 text-lg font-semibold"
-              asChild
-              data-testid="button-pricing-cta"
             >
-              <a>
-                Get Started Now - ₹99 Only
-              </a>
+              Get Started Now – ₹99 Only
             </Button>
 
             <p className="text-center text-xs text-muted-foreground mt-4">

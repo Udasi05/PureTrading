@@ -37,18 +37,20 @@ export class DatabaseStorage {
     return user.toObject();
   }
 
-  async updateUserMembership(userId: string, isMember: boolean) {
-    const user = await UserModel.findOneAndUpdate(
-      { id: userId },
-      {
-        isMember,
-        membershipStartDate: isMember ? new Date() : null,
-        updatedAt: new Date(),
-      },
-      { new: true }
-    );
-    return user?.toObject();
-  }
+  async updateUserMembership(userId: string, isMember: boolean, paymentId?: string) {
+  const user = await UserModel.findOneAndUpdate(
+    { id: userId },
+    {
+      isMember,
+      membershipStartDate: isMember ? new Date() : null,
+      lastPaymentId: paymentId ?? null,     // NEW
+      updatedAt: new Date(),
+    },
+    { new: true }
+  );
+  return user?.toObject();
+}
+
 
   // ---------------------------------------------------------
   // SIGNALS
