@@ -72,6 +72,9 @@ export default function ThankYou() {
         <button className="w-full mt-6 btn-primary" onClick={() => window.open("https://t.me/+qJEPE2RxT1o2ZDFl", "_blank")}>
           Join Telegram Community
         </button>
+        <p>
+          Mail has been send to your registered email with resources. Check spam folder too.
+        </p>
       </div>
     </div>
   );
