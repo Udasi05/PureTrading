@@ -22,7 +22,7 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
-  isMember: boolean("is_member").default(false),
+  status: varchar("status").default("Not active"),
   membershipStartDate: timestamp("membership_start_date"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

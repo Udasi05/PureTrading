@@ -12,7 +12,7 @@ export interface IUser extends Document {
   firstName?: string | null;
   lastName?: string | null;
   profileImageUrl?: string | null;
-  isMember: boolean;
+  status: string;
   membershipStartDate?: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -25,7 +25,7 @@ const UserSchema = new Schema<IUser>(
     firstName: { type: String, default: null },
     lastName: { type: String, default: null },
     profileImageUrl: { type: String, default: null },
-    isMember: { type: Boolean, default: false },
+    status: { type: String, default: "Not active" },
     membershipStartDate: { type: Date, default: null },
   },
   {

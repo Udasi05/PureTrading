@@ -149,9 +149,8 @@ export function HeroSection() {
                 </a>
               </Button>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="line-through">₹4999</span>
                 <span className="text-primary font-bold text-lg">₹99</span>
-                <Badge variant="destructive" className="text-xs">98% OFF</Badge>
+                <Badge variant="destructive" className="text-xs">Limited Launch Price: ₹99 Only</Badge>
               </div>
             </div>
 

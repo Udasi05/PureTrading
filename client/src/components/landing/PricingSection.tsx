@@ -146,15 +146,12 @@ export function PricingSection() {
               </p>
 
               <div className="mt-6 flex items-center justify-center gap-4">
-                <span className="text-2xl text-muted-foreground line-through">
-                  ₹4999
-                </span>
                 <span className="text-5xl font-bold text-gradient">₹99</span>
               </div>
 
               <Badge variant="destructive" className="mt-3">
                 <Zap className="w-3 h-3 mr-1" />
-                98% Discount - Limited Time!
+                Limited Launch Price: ₹99 Only
               </Badge>
             </div>
 

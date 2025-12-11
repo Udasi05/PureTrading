@@ -53,6 +53,16 @@ export function Footer() {
                   Sessions
                 </a>
               </li>
+              <li>
+                <a href="#telegram" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Telegram
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">
+                  About Us
+                </a>
+              </li>
             </ul>
           </div>
         </div>

@@ -20,6 +20,7 @@ const navLinks = [
   { href: "#instruments", label: "Instruments" },
   { href: "#sessions", label: "Sessions" },
   { href: "#telegram", label: "Telegram" },
+  { href: "#about", label: "About Us" },
 ];
 
 export function Navigation() {
@@ -134,8 +135,6 @@ export function Navigation() {
           </div>
 
           <div className="flex items-center gap-3">
-
-
             {isAuthenticated && user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

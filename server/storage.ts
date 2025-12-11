@@ -21,7 +21,7 @@ export class DatabaseStorage {
     firstName: doc.firstName ?? null,
     lastName: doc.lastName ?? null,
     profileImageUrl: doc.profileImageUrl ?? null,
-    isMember: doc.isMember ?? false,
+    status: doc.status ?? "Not active",
     membershipStartDate: doc.membershipStartDate ?? null,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
@@ -37,12 +37,12 @@ export class DatabaseStorage {
     return user.toObject();
   }
 
-  async updateUserMembership(userId: string, isMember: boolean, paymentId?: string) {
+  async updateUserMembership(userId: string, status: String, paymentId?: string) {
   const user = await UserModel.findOneAndUpdate(
     { id: userId },
     {
-      isMember,
-      membershipStartDate: isMember ? new Date() : null,
+      status: status,
+      membershipStartDate: status ? new Date() : null,
       lastPaymentId: paymentId ?? null,     // NEW
       updatedAt: new Date(),
     },

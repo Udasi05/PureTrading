@@ -50,27 +50,36 @@ export default function ThankYou() {
           <Button
             variant="secondary"
             className="w-full flex items-center justify-between bg-gray-800 hover:bg-gray-700"
-            onClick={() => window.open("YOUR_BOOK_1_URL.pdf", "_blank")}
+            onClick={() => window.open("https://drive.google.com/file/d/1q-rcGBZsOZXI4usfRHkCXfnSUxrdBspj/view?usp=drive_link", "_blank")}
           >
-            Download Book 1 (PDF)
+            Download Book 1 (Worth ₹800)
             <Download className="w-4 h-4" />
           </Button>
 
           <Button
             variant="secondary"
             className="w-full flex items-center justify-between bg-gray-800 hover:bg-gray-700"
-            onClick={() => window.open("YOUR_BOOK_2_URL.pdf", "_blank")}
+            onClick={() => window.open("", "_blank")}
           >
-            Download Book 2 (PDF)
+            Download Book 2 (Worth ₹4200)
             <Download className="w-4 h-4" />
           </Button>
 
           <Button
             variant="secondary"
             className="w-full flex items-center justify-between bg-gray-800 hover:bg-gray-700"
-            onClick={() => window.open("YOUR_BOOK_3_URL.pdf", "_blank")}
+            onClick={() => window.open("https://drive.google.com/file/d/149JYWNb84QPpJ80Kq7vI_P74udDZPM1D/view?usp=drive_link", "_blank")}
           >
-            Download Book 3 (PDF)
+            Download Book 3 (Worth ₹3800)
+            <Download className="w-4 h-4" />
+          </Button>
+
+          <Button
+            variant="secondary"
+            className="w-full flex items-center justify-between bg-gray-800 hover:bg-gray-700"
+            onClick={() => window.open("https://drive.google.com/file/d/17syWymiTO2emP5I8lnsI2sSpWI-j2HLS/view?usp=drive_link", "_blank")}
+          >
+            Technical Analysis and risk Management PDF (Worth ₹2200)
             <Download className="w-4 h-4" />
           </Button>
         </div>

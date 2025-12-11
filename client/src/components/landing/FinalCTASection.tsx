@@ -120,9 +120,8 @@ export function FinalCTASection() {
           </Button>
 
           <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground">
-            <span className="line-through">₹4999</span>
             <span className="text-primary font-bold text-2xl">₹99</span>
-            <Badge variant="destructive">98% OFF</Badge>
+            <Badge variant="destructive">Limited Launch Price: ₹99 Only</Badge>
           </div>
 
           <p className="text-xs text-muted-foreground mt-4">
