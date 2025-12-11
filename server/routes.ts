@@ -8,6 +8,9 @@ import { razorpay } from "./payment";
 import crypto from "crypto";
 import { z } from "zod";
 import { sendMembershipEmail } from "./email";
+import fs from "fs";
+import util from "util";
+import path from "path";
 // ------------------------------
 // ZOD VALIDATION SCHEMAS
 // ------------------------------
@@ -87,6 +90,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to update signal" });
     }
   });
+
+
+
+  // ------------------------------
+  // GET /api/payment/verify?paymentId=pay_xxx
+  // ------------------------------
+// ------------------------------
+// GET /api/payment/verify?paymentId=pay_xxx
+// ------------------------------
+app.get("/api/payment/verify", async (req, res) => {
+  try {
+    const paymentId = String(req.query.paymentId ?? "");
+    if (!paymentId) {
+      return res.status(400).json({ ok: false, message: "paymentId required" });
+    }
+
+    // read *payment record*, not membership
+    const record = await storage.getPaymentById(paymentId);
+
+    if (!record) {
+      console.log("❌ Payment NOT FOUND:", paymentId);
+      return res.status(404).json({ ok: false, message: "Payment not found" });
+    }
+
+    // Only captured (successful) payments get access
+    if (record.status !== "captured") {
+      console.log("❌ Payment NOT CAPTURED:", record.status);
+      return res.status(403).json({ ok: false, message: "Payment not captured" });
+    }
+
+    return res.json({
+      ok: true,
+      paymentId: record.paymentId,
+      userId: record.userId,
+      amount: record.amount,
+      resources: [
+        { key: "book1", label: "Book 1 PDF" },
+        { key: "book2", label: "Book 2 PDF" },
+        { key: "book3", label: "Book 3 PDF" },
+        { key: "telegram", label: "Telegram Invite" },
+      ],
+    });
+
+  } catch (err) {
+    console.error("Payment verify error:", err);
+    return res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
+
 
   // ------------------------------
   // MEMBERSHIPS
@@ -233,14 +285,27 @@ app.post("/api/user/create", async (req, res) => {
 
       await storage.updateUserMembership(userId, "active", pay.id);
 
+      // store payment record for later verification
+    await storage.createPaymentRecord({
+      paymentId: pay.id,
+      userId,
+      amount: pay.amount / 100,
+      currency: pay.currency,
+      status: "captured",
+      rawPayload: pay,
+    });
 
       // --------------------------------
       // SEND EMAIL AFTER SUCCESS PAYMENT
       // --------------------------------
-      const userEmail = pay.email; // Razorpay automatically gives email
-      await sendMembershipEmail(userEmail, pay.id);
+      const userEmail = pay.email || pay.notes?.email;
 
+    if (userEmail) {
+      await sendMembershipEmail(userEmail, pay.id);
       console.log("🎉 Email sent to:", userEmail);
+    }    else {
+      console.warn("⚠️ Email missing in payment");
+    }
     }
 
     res.json({ status: "ok" });
@@ -249,6 +314,54 @@ app.post("/api/user/create", async (req, res) => {
     res.status(500).send("Webhook failed");
   }
 });
+
+  // ------------------------------
+// PROTECTED FILE DOWNLOAD
+// ------------------------------
+
+const stat = util.promisify(fs.stat);
+
+// Map file keys to their filenames
+const protectedFiles: Record<string, string> = {
+  book1: "book1.pdf",
+  book2: "book2.pdf",
+  book3: "book3.pdf",
+};
+
+app.get("/api/download/:fileKey", async (req: any, res) => {
+  try {
+    const { fileKey } = req.params;
+    const paymentId = req.query.paymentId as string | undefined;
+
+    if (!paymentId) return res.status(400).send("paymentId required");
+
+    // 1️⃣ Verify payment in database
+    const payment = await storage.getPaymentById(paymentId);
+
+    if (!payment || payment.status !== "captured") {
+      return res.status(403).send("Access denied");
+    }
+
+    // 2️⃣ Validate file key
+    const filename = protectedFiles[fileKey];
+    if (!filename) return res.status(404).send("File not found");
+
+    // 3️⃣ Absolute path
+    const filePath = path.join(process.cwd(), "protected_files", filename);
+
+    await stat(filePath); // Ensures file exists
+
+    // 4️⃣ Secure file download
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.sendFile(filePath);
+  } catch (err: any) {
+    if (err.code === "ENOENT") return res.status(404).send("File not found");
+
+    console.error("Download error:", err);
+    res.status(500).send("Server error");
+  }
+});
+
   // ------------------------------
   // SERVER INSTANCE
   // ------------------------------

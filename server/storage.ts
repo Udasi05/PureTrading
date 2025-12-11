@@ -6,6 +6,7 @@ import {
   MarketAnalysisModel,
 } from "./models";
 import type { User } from "@shared/schema";
+import { PaymentModel } from "./models";
 
 export class DatabaseStorage {
   // ---------------------------------------------------------
@@ -27,6 +28,32 @@ export class DatabaseStorage {
     updatedAt: doc.updatedAt,
   };
 }
+
+// create payment record
+async createPaymentRecord(data: {
+  paymentId: string;
+  userId: string;
+  amount: number;
+  currency?: string;
+  status?: string;
+  rawPayload?: any;
+}) {
+  return await PaymentModel.create({
+    paymentId: data.paymentId,
+    userId: data.userId,
+    amount: data.amount,
+    currency: data.currency ?? "INR",
+    status: data.status ?? "captured",
+    rawPayload: data.rawPayload ?? {},
+    createdAt: new Date(),
+  });
+}
+
+// get payment by id
+async getPaymentById(paymentId: string) {
+  return await PaymentModel.findOne({ paymentId }).lean();
+}
+
 
   async upsertUser(data: any) {
     const user = await UserModel.findOneAndUpdate(
@@ -127,5 +154,6 @@ export class DatabaseStorage {
     });
   }
 }
+
 
 export const storage = new DatabaseStorage();

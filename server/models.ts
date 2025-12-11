@@ -33,6 +33,18 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
+const PaymentSchema = new mongoose.Schema({
+  paymentId: { type: String, required: true, unique: true }, // razorpay payment id
+  userId: { type: String, required: true }, // your user id (email or uuid)
+  amount: { type: Number, required: true },
+  currency: { type: String, default: "INR" },
+  status: { type: String, default: "captured" }, // captured, failed, refunded...
+  rawPayload: { type: mongoose.Schema.Types.Mixed }, // optional full payload for audit
+  createdAt: { type: Date, default: Date.now },
+});
+
+export const PaymentModel = mongoose.model("Payment", PaymentSchema);
+
 export const UserModel: Model<IUser> =
   (mongoose.models.User as Model<IUser>) ||
   mongoose.model<IUser>("User", UserSchema);

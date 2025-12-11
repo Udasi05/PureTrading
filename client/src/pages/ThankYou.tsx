@@ -1,92 +1,77 @@
+// client/src/pages/ThankYou.tsx
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, Send } from "lucide-react";
 import { useLocation } from "wouter";
+
 export default function ThankYou() {
-
-  // Get paymentId manually from URL
-  const paymentId = new URLSearchParams(window.location.search).get("paymentId");
-  const [timer, setTimer] = useState(10);
   const [, navigate] = useLocation();
-  
-  useEffect(() => {
-    if (!paymentId) {
-      // ❌ No payment ID → redirect user away
-      navigate("/");
-    }
-  }, [paymentId]);
+  const [verified, setVerified] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [paymentId, setPaymentId] = useState<string | null>(null);
 
-  if (!paymentId) return null; // prevent UI from flashing, []);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pid = params.get("paymentId");
+    setPaymentId(pid);
+    if (!pid) {
+      navigate("/");
+      return;
+    }
+
+    (async () => {
+      try {
+        const res = await fetch(`/api/payment/verify?paymentId=${encodeURIComponent(pid)}`);
+        const json = await res.json();
+        if (res.ok && json.ok) {
+          setVerified(true);
+        } else {
+          console.warn("Payment verify failed", json);
+          navigate("/");
+        }
+      } catch (err) {
+        console.error("Verify request error", err);
+        navigate("/");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [navigate]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Verifying payment...</div>;
+  }
+  if (!verified) return null;
+
+  const openDownload = (key: string) => {
+    // open protected download endpoint in new tab (browser will request)
+    const url = `/api/download/${key}?paymentId=${encodeURIComponent(paymentId!)}`;
+    window.open(url, "_blank");
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white px-6">
-      <div className="max-w-lg w-full bg-gray-900/60 backdrop-blur-xl border border-gray-700 rounded-2xl p-8 shadow-2xl animate-fadeIn">
-
+      <div className="max-w-lg w-full bg-gray-900/60 backdrop-blur-xl border border-gray-700 rounded-2xl p-8">
         <div className="flex justify-center mb-6">
           <CheckCircle className="text-green-400 w-16 h-16" />
         </div>
-
-        <h1 className="text-3xl font-bold text-center mb-3">
-          Payment Successful 🎉
-        </h1>
-
-        <p className="text-center text-gray-300 mb-6">
-          Welcome to <span className="text-green-400 font-semibold">Pure Trading Premium</span>!
-          <br />
-          Your membership is now active.
-        </p>
-
-        {paymentId && (
-          <div className="bg-gray-800 text-sm text-gray-300 p-3 rounded-lg mb-6">
-            <strong>Payment ID:</strong> {paymentId}
-          </div>
-        )}
+        <h1 className="text-3xl font-bold text-center mb-3">Payment Successful 🎉</h1>
+        <p className="text-center text-gray-300 mb-6">Welcome to Pure Trading Premium! Your membership is active.</p>
 
         <div className="space-y-3">
-          <Button
-            variant="secondary"
-            className="w-full flex items-center justify-between bg-gray-800 hover:bg-gray-700"
-            onClick={() => window.open("https://drive.google.com/file/d/1q-rcGBZsOZXI4usfRHkCXfnSUxrdBspj/view?usp=drive_link", "_blank")}
-          >
-            Download Book 1 (Worth ₹800)
-            <Download className="w-4 h-4" />
-          </Button>
-
-          <Button
-            variant="secondary"
-            className="w-full flex items-center justify-between bg-gray-800 hover:bg-gray-700"
-            onClick={() => window.open("", "_blank")}
-          >
-            Download Book 2 (Worth ₹4200)
-            <Download className="w-4 h-4" />
-          </Button>
-
-          <Button
-            variant="secondary"
-            className="w-full flex items-center justify-between bg-gray-800 hover:bg-gray-700"
-            onClick={() => window.open("https://drive.google.com/file/d/149JYWNb84QPpJ80Kq7vI_P74udDZPM1D/view?usp=drive_link", "_blank")}
-          >
-            Download Book 3 (Worth ₹3800)
-            <Download className="w-4 h-4" />
-          </Button>
-
-          <Button
-            variant="secondary"
-            className="w-full flex items-center justify-between bg-gray-800 hover:bg-gray-700"
-            onClick={() => window.open("https://drive.google.com/file/d/17syWymiTO2emP5I8lnsI2sSpWI-j2HLS/view?usp=drive_link", "_blank")}
-          >
-            Technical Analysis and risk Management PDF (Worth ₹2200)
-            <Download className="w-4 h-4" />
-          </Button>
+          <button className="w-full btn" onClick={() => openDownload("book1")}>
+            Download Book 1 (PDF)
+          </button>
+          <button className="w-full btn" onClick={() => openDownload("book2")}>
+            Download Book 2 (PDF)
+          </button>
+          <button className="w-full btn" onClick={() => openDownload("book3")}>
+            Download Book 3 (PDF)
+          </button>
         </div>
 
-        <Button
-          className="w-full mt-6 bg-green-500 hover:bg-green-600 text-black font-semibold"
-          onClick={() => window.open("https://t.me/+qJEPE2RxT1o2ZDFl", "_blank")}
-        >
+        <button className="w-full mt-6 btn-primary" onClick={() => window.open("YOUR_TELEGRAM_INVITE_LINK", "_blank")}>
           Join Telegram Community
-          <Send className="ml-2 w-4 h-4" />
-        </Button>
+        </button>
       </div>
     </div>
   );
