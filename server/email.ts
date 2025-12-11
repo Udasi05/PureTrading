@@ -23,7 +23,7 @@ try {
         </ul>
 
         <h3>Join the Telegram Channel</h3>
-        <p><a href="YOUR_TELEGRAM_LINK">Click here to join</a></p>
+        <p><a href="https://t.me/+qJEPE2RxT1o2ZDFl">Click here to join</a></p>
 
         <br />
         <p>Regards,<br>Pure Trading Team</p>
