@@ -69,7 +69,7 @@ export default function ThankYou() {
           </button>
         </div>
 
-        <button className="w-full mt-6 btn-primary" onClick={() => window.open("YOUR_TELEGRAM_INVITE_LINK", "_blank")}>
+        <button className="w-full mt-6 btn-primary" onClick={() => window.open("https://t.me/+qJEPE2RxT1o2ZDFl", "_blank")}>
           Join Telegram Community
         </button>
       </div>
