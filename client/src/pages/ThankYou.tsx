@@ -1,26 +1,22 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, Send } from "lucide-react";
-
+import { useLocation } from "wouter";
 export default function ThankYou() {
 
   // Get paymentId manually from URL
   const paymentId = new URLSearchParams(window.location.search).get("paymentId");
   const [timer, setTimer] = useState(10);
-
-  // Auto redirect after 10 sec
+  const [, navigate] = useLocation();
+  
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer((t) => {
-        if (t <= 1) {
-          window.location.href = "/thank-you"; // Change to your dashboard URL
-        }
-        return t - 1;
-      });
-    }, 1000);
+    if (!paymentId) {
+      // ❌ No payment ID → redirect user away
+      navigate("/");
+    }
+  }, [paymentId]);
 
-    return () => clearInterval(interval);
-  }, []);
+  if (!paymentId) return null; // prevent UI from flashing, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white px-6">
