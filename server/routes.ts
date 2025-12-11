@@ -116,7 +116,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         paymentId: validated.paymentId ?? "",
       });
 
-      await storage.updateUserMembership(userId, true);
+      await storage.updateUserMembership(userId, "active");
 
       res.status(201).json(membership);
     } catch (err: any) {
@@ -231,7 +231,7 @@ app.post("/api/user/create", async (req, res) => {
         paymentId: pay.id,
       });
 
-      await storage.updateUserMembership(userId, true, pay.id);
+      await storage.updateUserMembership(userId, "active", pay.id);
 
 
       // --------------------------------
