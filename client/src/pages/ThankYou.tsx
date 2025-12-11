@@ -75,21 +75,21 @@ export default function ThankYou() {
         className="w-full px-4 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 transition border border-gray-700 text-white font-medium flex items-center justify-center gap-2"
         onClick={() => openDownload('book1')}
       >
-        <Download className="w-4 h-4 text-green-400" /> Download Book 1 (PDF)
+        <Download className="w-4 h-4 text-green-400" /> Download Book 1
       </button>
 
       <button
         className="w-full px-4 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 transition border border-gray-700 text-white font-medium flex items-center justify-center gap-2"
         onClick={() => openDownload('book2')}
       >
-        <Download className="w-4 h-4 text-green-400" /> Download Book 2 (PDF)
+        <Download className="w-4 h-4 text-green-400" /> Download Book 2
       </button>
 
       <button
         className="w-full px-4 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 transition border border-gray-700 text-white font-medium flex items-center justify-center gap-2"
         onClick={() => openDownload('book3')}
       >
-        <Download className="w-4 h-4 text-green-400" /> Download Book 3 (PDF)
+        <Download className="w-4 h-4 text-green-400" /> Download Book 3
       </button>
     </div>
 
