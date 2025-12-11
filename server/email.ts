@@ -17,9 +17,9 @@ try {
 
         <h3>Your Learning Resources:</h3>
         <ul>
-        <li><a href="https://drive.google.com/file/d/1q-rcGBZsOZXI4usfRHkCXfnSUxrdBspj/view?usp=drive_link">Book 1 PDF</a></li>
-        <li><a href="https://drive.google.com/file/d/149JYWNb84QPpJ80Kq7vI_P74udDZPM1D/view?usp=drive_link">Book 2 PDF</a></li>
-        <li><a href="https://drive.google.com/file/d/17syWymiTO2emP5I8lnsI2sSpWI-j2HLS/view?usp=drive_link">Book 3 PDF</a></li>
+        <li><a href="https://drive.google.com/file/d/1q-rcGBZsOZXI4usfRHkCXfnSUxrdBspj/view?usp=sharing">Book 1 PDF</a></li>
+        <li><a href="https://drive.google.com/file/d/149JYWNb84QPpJ80Kq7vI_P74udDZPM1D/view?usp=sharing">Book 2 PDF</a></li>
+        <li><a href="https://drive.google.com/file/d/17syWymiTO2emP5I8lnsI2sSpWI-j2HLS/view?usp=sharing">Book 3 PDF</a></li>
         </ul>
 
         <h3>Join the Telegram Channel</h3>
