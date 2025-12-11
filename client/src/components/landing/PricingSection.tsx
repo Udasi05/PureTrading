@@ -73,12 +73,12 @@ export function PricingSection() {
   const benefits = [
     {
       icon: BookOpen,
-      title: "3 Premium Ebooks",
+      title: "3 Premium Ebooks Worth ₹8800",
       description: "Comprehensive trading guides for all levels",
     },
     {
       icon: FileText,
-      title: "Technical Analysis PDF",
+      title: "Technical Analysis & Risk Management PDF Worth ₹2200",
       description: "Market structure, liquidity, sweep methods",
     },
     {
