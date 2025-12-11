@@ -17,9 +17,9 @@ try {
 
         <h3>Your Learning Resources:</h3>
         <ul>
-        <li><a href="YOUR_BOOK_1_URL">Book 1 PDF</a></li>
-        <li><a href="YOUR_BOOK_2_URL">Book 2 PDF</a></li>
-        <li><a href="YOUR_BOOK_3_URL">Book 3 PDF</a></li>
+        <li><a href="/PureTrading/protected_files/book1.pdf">Book 1 PDF</a></li>
+        <li><a href="/PureTrading/protected_files/book2.pdf">Book 2 PDF</a></li>
+        <li><a href="/PureTrading/protected_files/book3.pdf">Book 3 PDF</a></li>
         </ul>
 
         <h3>Join the Telegram Channel</h3>
