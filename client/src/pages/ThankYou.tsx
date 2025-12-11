@@ -49,33 +49,64 @@ export default function ThankYou() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white px-6">
-      <div className="max-w-lg w-full bg-gray-900/60 backdrop-blur-xl border border-gray-700 rounded-2xl p-8">
-        <div className="flex justify-center mb-6">
-          <CheckCircle className="text-green-400 w-16 h-16" />
-        </div>
-        <h1 className="text-3xl font-bold text-center mb-3">Payment Successful 🎉</h1>
-        <p className="text-center text-gray-300 mb-6">Welcome to Pure Trading Premium! Your membership is active.</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white px-4">
+  <div className="max-w-xl w-full bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-3xl p-10 shadow-2xl">
 
-        <div className="space-y-3">
-          <button className="w-full btn" onClick={() => openDownload("book1")}>
-            Download Book 1 (PDF)
-          </button>
-          <button className="w-full btn" onClick={() => openDownload("book2")}>
-            Download Book 2 (PDF)
-          </button>
-          <button className="w-full btn" onClick={() => openDownload("book3")}>
-            Download Book 3 (PDF)
-          </button>
-        </div>
-
-        <button className="w-full mt-6 btn-primary" onClick={() => window.open("https://t.me/+qJEPE2RxT1o2ZDFl", "_blank")}>
-          Join Telegram Community
-        </button>
-        <p>
-          Mail has been send to your registered email with resources. Check spam folder too.
-        </p>
+    {/* Success Icon */}
+    <div className="flex justify-center mb-6">
+      <div className="w-20 h-20 flex items-center justify-center rounded-full bg-green-500/10 border border-green-500/30">
+        <CheckCircle className="text-green-400 w-12 h-12" />
       </div>
     </div>
+
+    {/* Title */}
+    <h1 className="text-4xl font-bold text-center mb-4 tracking-tight">
+      Payment Successful 🎉
+    </h1>
+
+    <p className="text-center text-gray-300 text-lg mb-8">
+      Welcome to <span className="text-green-400 font-semibold">Pure Trading Premium!</span>
+      <br />Your membership is now active.
+    </p>
+
+    {/* Downloads */}
+    <div className="space-y-4">
+      <button
+        className="w-full px-4 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 transition border border-gray-700 text-white font-medium flex items-center justify-center gap-2"
+        onClick={() => openDownload('book1')}
+      >
+        <Download className="w-4 h-4 text-green-400" /> Download Book 1 (PDF)
+      </button>
+
+      <button
+        className="w-full px-4 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 transition border border-gray-700 text-white font-medium flex items-center justify-center gap-2"
+        onClick={() => openDownload('book2')}
+      >
+        <Download className="w-4 h-4 text-green-400" /> Download Book 2 (PDF)
+      </button>
+
+      <button
+        className="w-full px-4 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 transition border border-gray-700 text-white font-medium flex items-center justify-center gap-2"
+        onClick={() => openDownload('book3')}
+      >
+        <Download className="w-4 h-4 text-green-400" /> Download Book 3 (PDF)
+      </button>
+    </div>
+
+    {/* Telegram Button */}
+    <button
+      className="w-full mt-8 py-4 rounded-xl bg-green-500 hover:bg-green-600 transition text-black font-bold text-lg shadow-lg shadow-green-500/20"
+      onClick={() => window.open("https://t.me/+qJEPE2RxT1o2ZDFl", "_blank")}
+    >
+      Join Telegram Community
+    </button>
+
+    {/* Note */}
+    <p className="text-center text-gray-400 text-sm mt-6 leading-relaxed">
+      Mail has been sent to your registered email with resources.
+      <br />Check your spam folder too.
+    </p>
+  </div>
+</div>
   );
 }
