@@ -101,17 +101,17 @@ try {
         Hello Trader, <br /><br />
         Your <strong>Pure Trading Premium Membership</strong> is now active.
         You now have access to our exclusive learning resources and community.
-    </p>
+      </p>
 
-    <!-- PAYMENT INFO -->
-    <div style="
+      <!-- PAYMENT INFO -->
+      <div style="
         background:#f9fafb;
         padding:14px;
         border-radius:10px;
         border:1px solid #e5e7eb;
         margin-top:16px;">
         <p style="margin:0; font-size:14px;">
-        <strong>${paymentId}</strong> <span style="color:#10b981;">PAYMENT_ID_HERE</span>
+        <strong></strong> Payment ID:<span style="color:#10b981;">${paymentId}</span>
         </p>
     </div>
 
@@ -156,7 +156,7 @@ try {
     <!-- FOOTER -->
     <div class="footer">
         You received this email because you purchased a membership on
-        <strong>PureTrading.in</strong>.
+        <strong>PureTrading.in</strong>.  
         <br />If this wasn’t you, please contact support immediately.
         <br /><br />
         © Pure Trading – Empowering Traders with Structure, Not Emotion.
