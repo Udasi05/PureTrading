@@ -160,16 +160,29 @@ export function Navigation() {
               </DropdownMenu>
             ) : (
               <div className="hidden sm:flex items-center gap-2">
-                <Button
-                    onClick={() => {
-                    setIsOpen(false); // close dropdown
-                    openPopup(handleUserDetails); // open popup
-                  }}
-                  asChild
-                  className="w-full"
-                >
-                <a>Join at ₹99</a>
-                </Button>
+                {/* inside SheetContent */}
+<Button
+  onClick={() => {
+    // close mobile sheet immediately
+    setIsOpen(false);
+
+    // remove focus from sheet controls (avoid focus trap issues)
+    (document.activeElement as HTMLElement | null)?.blur?.();
+
+    // small delay so sheet can start closing / unmount
+    setTimeout(() => {
+      try {
+        openPopup(handleUserDetails);
+      } catch (err) {
+        console.error("openPopup error:", err);
+      }
+    }, 120);
+  }}
+  className="w-full"
+>
+  Join at ₹99
+</Button>
+
               </div>
             )}
 
