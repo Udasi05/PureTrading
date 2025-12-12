@@ -161,10 +161,14 @@ export function Navigation() {
             ) : (
               <div className="hidden sm:flex items-center gap-2">
                 <Button
-                onClick={() => openPopup(handleUserDetails)}
-                asChild
-                data-testid="button-join">
-                  <a>Join at ₹99</a>
+                    onClick={() => {
+                    setIsOpen(false); // close dropdown
+                    openPopup(handleUserDetails); // open popup
+                  }}
+                  asChild
+                  className="w-full"
+                >
+                <a>Join at ₹99</a>
                 </Button>
               </div>
             )}
