@@ -129,6 +129,7 @@ app.get("/api/payment/verify", async (req, res) => {
         { key: "book1", label: "Book 1 PDF" },
         { key: "book2", label: "Book 2 PDF" },
         { key: "book3", label: "Book 3 PDF" },
+        { key: "book4", label: "Book 4 PDF" },
         { key: "telegram", label: "Telegram Invite" },
       ],
     });
@@ -326,6 +327,7 @@ const protectedFiles: Record<string, string> = {
   book1: "book1.pdf",
   book2: "book2.pdf",
   book3: "book3.pdf",
+  book4: "book4.pdf",
 };
 
 app.get("/api/download/:fileKey", async (req: any, res) => {
