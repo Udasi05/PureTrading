@@ -126,16 +126,23 @@ try {
         </li>
 
         <li>
-        <a href="https://drive.google.com/file/d/149JYWNb84QPpJ80Kq7vI_P74udDZPM1D/view?usp=sharing" target="_blank">
+        <a href="https://drive.google.com/file/d/1PxF9z21MYliYJ2zirB9lv8g1BShHrXqz/view?usp=sharing" target="_blank">
             Book 2 – Trading Psychology & Risk Management
         </a>
         </li>
 
         <li>
-        <a href="https://drive.google.com/file/d/17syWymiTO2emP5I8lnsI2sSpWI-j2HLS/view?usp=sharing" target="_blank">
+        <a href="https://drive.google.com/file/d/1-ses5QBjmDOUF6YbQtKjm5PDyVjrzQPg/view?usp=sharing" target="_blank">
             Book 3 – Trading Strategy & Prop Firm Preparation
         </a>
         </li>
+
+        <li>
+        <a href="https://drive.google.com/file/d/17syWymiTO2emP5I8lnsI2sSpWI-j2HLS/view?usp=sharing" target="_blank">
+            Technical & Risk Management PDF
+        </a>
+        </li>
+
     </ul>
 
     <!-- TELEGRAM -->
