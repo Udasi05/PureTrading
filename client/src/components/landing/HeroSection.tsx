@@ -28,64 +28,88 @@ export function HeroSection() {
   const [popupOpen, setPopupOpen] = useState(false);
   const { openPopup } = usePopup();
   
-  const handleUserDetails = async ({ name, email, phone }: any) => {
-    try {
-      const resUser = await fetch("/api/user/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone }),
-      });
+  // const handleUserDetails = async ({ name, email, phone }: any) => {
+  //   try {
+  //     const resUser = await fetch("/api/user/create", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ name, email, phone }),
+  //     });
 
-      const dataUser = await resUser.json();
-      const userId = dataUser.userId;
+  //     const dataUser = await resUser.json();
+  //     const userId = dataUser.userId;
 
-      setPopupOpen(false);
+  //     setPopupOpen(false);
 
-      const res = await fetch("/api/payment/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: 99,
-          planName: "Pure Trading Membership",
-          userId,
-        }),
-      });
+  //     const res = await fetch("/api/payment/create-order", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         amount: 99,
+  //         planName: "Pure Trading Membership",
+  //         userId,
+  //       }),
+  //     });
 
-      const data = await res.json();
+  //     const data = await res.json();
 
-      const options = {
-        key: data.keyId,
-        amount: data.amount,
-        currency: data.currency,
-        name: "Pure Trading",
-        description: "Membership Purchase",
-        order_id: data.orderId,
+  //     const options = {
+  //       key: data.keyId,
+  //       amount: data.amount,
+  //       currency: data.currency,
+  //       name: "Pure Trading",
+  //       description: "Membership Purchase",
+  //       order_id: data.orderId,
 
-        handler: function (response: any) {
-          window.location.href = "/thank-you?paymentId=" + response.razorpay_payment_id;
-        },
+  //       handler: function (response: any) {
+  //         window.location.href = "/thank-you?paymentId=" + response.razorpay_payment_id;
+  //       },
 
-        prefill: {
-          name,
-          email,
-          contact: phone,
-        },
+  //       prefill: {
+  //         name,
+  //         email,
+  //         contact: phone,
+  //       },
 
-        theme: { color: "#10b981" },
-      };
+  //       theme: { color: "#10b981" },
+  //     };
 
-      const razorpay = new (window as any).Razorpay(options);
+  //     const razorpay = new (window as any).Razorpay(options);
 
-      razorpay.on("payment.failed", (response: any) =>
-        alert("Payment Failed: " + response.error.description)
-      );
+  //     razorpay.on("payment.failed", (response: any) =>
+  //       alert("Payment Failed: " + response.error.description)
+  //     );
 
-      razorpay.open();
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong!");
+  //     razorpay.open();
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Something went wrong!");
+  //   }
+  // };
+
+
+const handleFreeJoin = async ({ name, email, phone }: any) => {
+  try {
+    const res = await fetch("/api/user/free-join", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, phone }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Something went wrong");
+      return;
     }
-  };
+
+    // redirect to thank you
+    window.location.href = "/thank-you?userId=" + data.userId;
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
+};
   useEffect(() => {
     const interval = setInterval(() => {
       setIsVisible(false);
@@ -137,20 +161,19 @@ export function HeroSection() {
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <Button
-                onClick={() => openPopup(handleUserDetails)}
+                onClick={() => openPopup(handleFreeJoin)}
                 size="lg"
                 className="px-8 py-6 text-lg font-semibold animate-pulse-glow"
                 asChild
                 data-testid="button-hero-cta"
               >
                 <a>
-                  Join at ₹99 Only
+                  Join Now 
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </a>
               </Button>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="text-primary font-bold text-lg">₹99</span>
-                <Badge variant="destructive" className="text-xs">Limited Launch Price: ₹99 Only</Badge>
+                <span className="text-primary font-bold text-lg">₹0 Free</span>
               </div>
             </div>
 
@@ -177,7 +200,7 @@ export function HeroSection() {
       <UserDetailsPopup
       open={popupOpen}
       onClose={() => setPopupOpen(false)}
-      onSubmit={handleUserDetails}
+      onSubmit={handleFreeJoin}
       />
     </section>
   );

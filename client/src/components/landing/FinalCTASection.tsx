@@ -15,63 +15,31 @@ export function FinalCTASection() {
   const { openPopup } = usePopup();
 
   // ✅ FIX: This function must NOT close popup manually
-  const handleUserDetails = async ({ name, email, phone }: any) => {
-    try {
-      const resUser = await fetch("/api/user/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone }),
-      });
+ 
+  
+  const handleFreeJoin = async ({ name, email, phone }: any) => {
+  try {
+    const res = await fetch("/api/user/free-join", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, phone }),
+    });
 
-      const dataUser = await resUser.json();
-      const userId = dataUser.userId;
+    const data = await res.json();
 
-      const res = await fetch("/api/payment/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: 99,
-          planName: "Pure Trading Membership",
-          userId,
-        }),
-      });
-
-      const data = await res.json();
-
-      const options = {
-        key: data.keyId,
-        amount: data.amount,
-        currency: data.currency,
-        name: "Pure Trading",
-        description: "Membership Purchase",
-        order_id: data.orderId,
-
-        handler: function (response: any) {
-          window.location.href =
-            "/thank-you?paymentId=" + response.razorpay_payment_id;
-        },
-
-        prefill: {
-          name,
-          email,
-          contact: phone,
-        },
-
-        theme: { color: "#10b981" },
-      };
-
-      const razorpay = new (window as any).Razorpay(options);
-
-      razorpay.on("payment.failed", (response: any) =>
-        alert("Payment Failed: " + response.error.description)
-      );
-
-      razorpay.open();
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong!");
+    if (!res.ok) {
+      alert(data.message || "Something went wrong");
+      return;
     }
-  };
+
+    // redirect to thank you
+    window.location.href = "/thank-you?userId=" + data.userId;
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
+};
+
 
   return (
     <section className="py-24 relative overflow-hidden">
@@ -111,17 +79,16 @@ export function FinalCTASection() {
 
         <div className="space-y-4">
           <Button
-            onClick={() => openPopup(handleUserDetails)}
+            onClick={() => openPopup(handleFreeJoin)}
             size="lg"
             className="px-10 py-6 text-lg font-semibold animate-pulse-glow"
           >
-            Join Pure Trading at ₹99
+            Join Now Free
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
 
           <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground">
-            <span className="text-primary font-bold text-2xl">₹99</span>
-            <Badge variant="destructive">Limited Launch Price: ₹99 Only</Badge>
+            <span className="text-primary font-bold text-2xl">₹0 Free</span>
           </div>
 
           <p className="text-xs text-muted-foreground mt-4">

@@ -18,57 +18,81 @@ export function PricingSection() {
   const { openPopup } = usePopup();
 
   // SAME handler used in HeroSection & FinalCTASection
-  const handleUserDetails = async ({ name, email, phone }: any) => {
-    try {
-      const resUser = await fetch("/api/user/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone }),
-      });
+  // const handleUserDetails = async ({ name, email, phone }: any) => {
+  //   try {
+  //     const resUser = await fetch("/api/user/create", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ name, email, phone }),
+  //     });
 
-      const dataUser = await resUser.json();
-      const userId = dataUser.userId;
+  //     const dataUser = await resUser.json();
+  //     const userId = dataUser.userId;
 
-      const res = await fetch("/api/payment/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: 99,
-          planName: "Pure Trading Membership",
-          userId,
-        }),
-      });
+  //     const res = await fetch("/api/payment/create-order", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         amount: 99,
+  //         planName: "Pure Trading Membership",
+  //         userId,
+  //       }),
+  //     });
 
-      const data = await res.json();
+  //     const data = await res.json();
 
-      const razorpay = new (window as any).Razorpay({
-        key: data.keyId,
-        amount: data.amount,
-        currency: data.currency,
-        name: "Pure Trading",
-        description: "Membership Purchase",
-        order_id: data.orderId,
+  //     const razorpay = new (window as any).Razorpay({
+  //       key: data.keyId,
+  //       amount: data.amount,
+  //       currency: data.currency,
+  //       name: "Pure Trading",
+  //       description: "Membership Purchase",
+  //       order_id: data.orderId,
 
-        handler: function (response: any) {
-          window.location.href =
-            "/thank-you?paymentId=" + response.razorpay_payment_id;
-        },
+  //       handler: function (response: any) {
+  //         window.location.href =
+  //           "/thank-you?paymentId=" + response.razorpay_payment_id;
+  //       },
 
-        prefill: {
-          name,
-          email,
-          contact: phone,
-        },
+  //       prefill: {
+  //         name,
+  //         email,
+  //         contact: phone,
+  //       },
 
-        theme: { color: "#10b981" },
-      });
+  //       theme: { color: "#10b981" },
+  //     });
 
-      razorpay.open();
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong!");
+  //     razorpay.open();
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Something went wrong!");
+  //   }
+  // };
+
+  const handleFreeJoin = async ({ name, email, phone }: any) => {
+  try {
+    const res = await fetch("/api/user/free-join", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, phone }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Something went wrong");
+      return;
     }
-  };
+
+    // redirect to thank you
+    window.location.href = "/thank-you?userId=" + data.userId;
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
+};
+
 
   const benefits = [
     {
@@ -146,12 +170,12 @@ export function PricingSection() {
               </p>
 
               <div className="mt-6 flex items-center justify-center gap-4">
-                <span className="text-5xl font-bold text-gradient">₹99</span>
+                <span className="text-5xl font-bold text-gradient">₹0</span>
               </div>
 
               <Badge variant="destructive" className="mt-3">
                 <Zap className="w-3 h-3 mr-1" />
-                Limited Launch Price: ₹99 Only
+                Launch Special: Free Access
               </Badge>
             </div>
 
@@ -175,15 +199,15 @@ export function PricingSection() {
 
             {/* FIXED JOIN BUTTON */}
             <Button
-              onClick={() => openPopup(handleUserDetails)}
+              onClick={() => openPopup(handleFreeJoin)}
               size="lg"
               className="w-full py-6 text-lg font-semibold"
             >
-              Get Started Now – ₹99 Only
+              Get Started Now – ₹0 Free
             </Button>
 
             <p className="text-center text-xs text-muted-foreground mt-4">
-              Instant access after payment.
+              Instant access.
             </p>
           </Card>
         </div>
