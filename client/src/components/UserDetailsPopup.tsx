@@ -77,7 +77,7 @@ export default function UserDetailsPopup({ open, onClose, onSubmit }: any) {
           className="w-full mt-6 bg-green-500 hover:bg-green-600 font-semibold text-black py-3"
           onClick={handleSubmit}
         >
-          Continue to Payment
+          Continue for Resources
         </Button>
       </div>
     </div>
