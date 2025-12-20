@@ -29,82 +29,101 @@ export class DatabaseStorage {
   };
 }
 
-// create payment record
-async createPaymentRecord(data: {
-  paymentId: string;
-  userId: string;
-  amount: number;
-  currency?: string;
-  status?: string;
-  rawPayload?: any;
+async upsertUser(data: {
+  id: string;
+  email: string;
+  firstName?: string;
+  phone?: string;
+  membership?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }) {
-  return await PaymentModel.create({
-    paymentId: data.paymentId,
-    userId: data.userId,
-    amount: data.amount,
-    currency: data.currency ?? "INR",
-    status: data.status ?? "captured",
-    rawPayload: data.rawPayload ?? {},
-    createdAt: new Date(),
-  });
-}
-
-// get payment by id
-async getPaymentById(paymentId: string) {
-  return await PaymentModel.findOne({ paymentId }).lean();
-}
-
-
-  async upsertUser(data: any) {
-    const user = await UserModel.findOneAndUpdate(
-      { id: data.id },
-      { ...data, updatedAt: new Date() },
-      { new: true, upsert: true }
-    );
-    return user.toObject();
-  }
-
-  async updateUserMembership(userId: string, status: String, paymentId?: string) {
   const user = await UserModel.findOneAndUpdate(
-    { id: userId },
-    {
-      status: status,
-      membershipStartDate: status ? new Date() : null,
-      lastPaymentId: paymentId ?? null,     // NEW
-      updatedAt: new Date(),
-    },
-    { new: true }
+    { id: data.id },
+    { ...data, updatedAt: new Date() },
+    { new: true, upsert: true }
   );
-  return user?.toObject();
+
+  return user.toObject();
 }
+
+
+// // create payment record
+// async createPaymentRecord(data: {
+//   paymentId: string;
+//   userId: string;
+//   amount: number;
+//   currency?: string;
+//   status?: string;
+//   rawPayload?: any;
+// }) {
+//   return await PaymentModel.create({
+//     paymentId: data.paymentId,
+//     userId: data.userId,
+//     amount: data.amount,
+//     currency: data.currency ?? "INR",
+//     status: data.status ?? "captured",
+//     rawPayload: data.rawPayload ?? {},
+//     createdAt: new Date(),
+//   });
+// }
+
+// // get payment by id
+// async getPaymentById(paymentId: string) {
+//   return await PaymentModel.findOne({ paymentId }).lean();
+// }
+
+
+//   async upsertUser(data: any) {
+//     const user = await UserModel.findOneAndUpdate(
+//       { id: data.id },
+//       { ...data, updatedAt: new Date() },
+//       { new: true, upsert: true }
+//     );
+//     return user.toObject();
+//   }
+
+//   async updateUserMembership(userId: string, status: String, paymentId?: string) {
+//   const user = await UserModel.findOneAndUpdate(
+//     { id: userId },
+//     {
+//       status: status,
+//       membershipStartDate: status ? new Date() : null,
+//       lastPaymentId: paymentId ?? null,     // NEW
+//       updatedAt: new Date(),
+//     },
+//     { new: true }
+//   );
+//   return user?.toObject();
+// }
 
 
   // ---------------------------------------------------------
   // SIGNALS
   // ---------------------------------------------------------
-  async getSignals() {
-    return await SignalModel.find().sort({ createdAt: -1 }).lean();
-  }
+  // async getSignals() {
+  //   return await SignalModel.find().sort({ createdAt: -1 }).lean();
+  // }
 
-  async getSignal(id: string) {
-    return await SignalModel.findById(id).lean();
-  }
+  // async getSignal(id: string) {
+  //   return await SignalModel.findById(id).lean();
+  // }
 
-  async createSignal(data: any) {
-    return await SignalModel.create({
-      ...data,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-  }
+  // async createSignal(data: any) {
+  //   return await SignalModel.create({
+  //     ...data,
+  //     createdAt: new Date(),
+  //     updatedAt: new Date(),
+  //   });
+  // }
 
-  async updateSignal(id: string, data: any) {
-    return await SignalModel.findByIdAndUpdate(
-      id,
-      { ...data, updatedAt: new Date() },
-      { new: true }
-    ).lean();
-  }
+  // async updateSignal(id: string, data: any) {
+  //   return await SignalModel.findByIdAndUpdate(
+  //     id,
+  //     { ...data, updatedAt: new Date() },
+  //     { new: true }
+  //   ).lean();
+  // }
 
   // ---------------------------------------------------------
   // MEMBERSHIPS
@@ -117,38 +136,6 @@ async getPaymentById(paymentId: string) {
 
   async createMembership(data: any) {
     return await MembershipModel.create({
-      ...data,
-      createdAt: new Date(),
-    });
-  }
-
-  // ---------------------------------------------------------
-  // ECONOMIC EVENTS (FIX)
-  // ---------------------------------------------------------
-  async getEconomicEvents() {
-    return await EconomicEventModel.find()
-      .sort({ eventTime: -1 })
-      .lean();
-  }
-
-  async createEconomicEvent(data: any) {
-    return await EconomicEventModel.create({
-      ...data,
-      createdAt: new Date(),
-    });
-  }
-
-  // ---------------------------------------------------------
-  // MARKET ANALYSIS (FIX)
-  // ---------------------------------------------------------
-  async getMarketAnalysis() {
-    return await MarketAnalysisModel.find()
-      .sort({ createdAt: -1 })
-      .lean();
-  }
-
-  async createMarketAnalysis(data: any) {
-    return await MarketAnalysisModel.create({
       ...data,
       createdAt: new Date(),
     });

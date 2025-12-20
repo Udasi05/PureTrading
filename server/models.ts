@@ -11,6 +11,7 @@ export interface IUser extends Document {
   email?: string | null;
   firstName?: string | null;
   lastName?: string | null;
+  phoneNumber: string;
   profileImageUrl?: string | null;
   status: string;
   membershipStartDate?: Date | null;
@@ -24,6 +25,7 @@ const UserSchema = new Schema<IUser>(
     email: { type: String, default: null },
     firstName: { type: String, default: null },
     lastName: { type: String, default: null },
+    phoneNumber: { type: String },
     profileImageUrl: { type: String, default: null },
     status: { type: String, default: "Not active" },
     membershipStartDate: { type: Date, default: null },

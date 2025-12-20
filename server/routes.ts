@@ -245,23 +245,28 @@ app.post("/api/user/free-join", async (req, res) => {
   try {
     const { name, email, phone } = req.body;
 
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
+    if (!email || !phone) {
+      return res.status(400).json({ message: "Email and phone are required" });
     }
 
-    // Save / update user
     const user = await storage.upsertUser({
       id: email,
       email,
       firstName: name,
       phone,
+      membership: "free",
       createdAt: new Date(),
       updatedAt: new Date(),
-      membership: "free",
     });
 
-    // Send welcome email
-    await sendMembershipEmail(email, user.id); // no paymentId
+    // Send email
+    await sendMembershipEmail(email, user.id);
+
+    console.log("✅ USER SAVED:", {
+      name: user.firstName,
+      email: user.email,
+      phone: user.phoneNumber,
+    });
 
     res.json({
       ok: true,
@@ -272,6 +277,7 @@ app.post("/api/user/free-join", async (req, res) => {
     res.status(500).json({ message: "Failed to join" });
   }
 });
+
 
 
   // ------------------------------
