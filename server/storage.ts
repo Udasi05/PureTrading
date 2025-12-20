@@ -2,11 +2,9 @@ import {
   UserModel,
   SignalModel,
   MembershipModel,
-  EconomicEventModel,
-  MarketAnalysisModel,
+  PaymentModel,
 } from "./models";
 import type { User } from "@shared/schema";
-import { PaymentModel } from "./models";
 
 export class DatabaseStorage {
   // ---------------------------------------------------------
@@ -21,6 +19,7 @@ export class DatabaseStorage {
     email: doc.email ?? null,
     firstName: doc.firstName ?? null,
     lastName: doc.lastName ?? null,
+    phone: doc.phoneNumber,
     profileImageUrl: doc.profileImageUrl ?? null,
     status: doc.status ?? "Not active",
     membershipStartDate: doc.membershipStartDate ?? null,

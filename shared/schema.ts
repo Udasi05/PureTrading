@@ -21,6 +21,7 @@ export const users = pgTable("users", {
   email: varchar("email").unique(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
+  phone: varchar("phone_number"),
   profileImageUrl: varchar("profile_image_url"),
   status: varchar("status").default("Not active"),
   membershipStartDate: timestamp("membership_start_date"),
@@ -50,59 +51,9 @@ export const membershipsRelations = relations(memberships, ({ one }) => ({
     references: [users.id],
   }),
 }));
-
-// Trading signals table
-export const signals = pgTable("signals", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  instrument: varchar("instrument").notNull(),
-  instrumentType: varchar("instrument_type").notNull(),
-  session: varchar("session").notNull(),
-  direction: varchar("direction").notNull(),
-  entryPrice: varchar("entry_price").notNull(),
-  stopLoss: varchar("stop_loss").notNull(),
-  takeProfit1: varchar("take_profit_1").notNull(),
-  takeProfit2: varchar("take_profit_2"),
-  takeProfit3: varchar("take_profit_3"),
-  lotSize: varchar("lot_size").notNull(),
-  riskReward: varchar("risk_reward"),
-  rationale: text("rationale"),
-  status: varchar("status").default("active"),
-  result: varchar("result"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Economic calendar events
-export const economicEvents = pgTable("economic_events", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  title: varchar("title").notNull(),
-  currency: varchar("currency").notNull(),
-  impact: varchar("impact").notNull(),
-  forecast: varchar("forecast"),
-  previous: varchar("previous"),
-  actual: varchar("actual"),
-  eventTime: timestamp("event_time").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Market analysis
-export const marketAnalysis = pgTable("market_analysis", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  instrument: varchar("instrument").notNull(),
-  instrumentType: varchar("instrument_type").notNull(),
-  title: varchar("title").notNull(),
-  analysis: text("analysis").notNull(),
-  sentiment: varchar("sentiment"),
-  keyLevels: text("key_levels"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
 // Schemas and types
 export const insertUserSchema = createInsertSchema(users).omit({ createdAt: true, updatedAt: true });
 export const insertMembershipSchema = createInsertSchema(memberships).omit({ id: true, createdAt: true });
-export const insertSignalSchema = createInsertSchema(signals).omit({ id: true, createdAt: true, updatedAt: true });
-export const insertEconomicEventSchema = createInsertSchema(economicEvents).omit({ id: true, createdAt: true });
-export const insertMarketAnalysisSchema = createInsertSchema(marketAnalysis).omit({ id: true, createdAt: true });
 
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -110,12 +61,3 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 
 export type Membership = typeof memberships.$inferSelect;
 export type InsertMembership = z.infer<typeof insertMembershipSchema>;
-
-export type Signal = typeof signals.$inferSelect;
-export type InsertSignal = z.infer<typeof insertSignalSchema>;
-
-export type EconomicEvent = typeof economicEvents.$inferSelect;
-export type InsertEconomicEvent = z.infer<typeof insertEconomicEventSchema>;
-
-export type MarketAnalysis = typeof marketAnalysis.$inferSelect;
-export type InsertMarketAnalysis = z.infer<typeof insertMarketAnalysisSchema>;
