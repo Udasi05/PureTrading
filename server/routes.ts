@@ -265,7 +265,7 @@ app.post("/api/user/free-join", async (req, res) => {
     console.log("✅ USER SAVED:", {
       name: user.firstName,
       email: user.email,
-      phone: user.phoneNumber,
+      phone: user.phone,
     });
 
     res.json({
