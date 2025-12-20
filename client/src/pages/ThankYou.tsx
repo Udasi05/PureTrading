@@ -54,7 +54,7 @@ export default function ThankYou() {
             { label: "Download Book 1", file: "https://drive.google.com/file/d/1q-rcGBZsOZXI4usfRHkCXfnSUxrdBspj/view?usp=sharing" },
             { label: "Download Book 2", file: "https://drive.google.com/file/d/1-ses5QBjmDOUF6YbQtKjm5PDyVjrzQPg/view?usp=sharing" },
             { label: "Download Book 3", file: "https://drive.google.com/file/d/1PxF9z21MYliYJ2zirB9lv8g1BShHrXqz/view?usp=sharing" },
-            { label: "Technical & Risk Management PDF", file: "/PureTrading/dist/public/protected_files/technical-risk.pdf" },
+            { label: "Technical & Risk Management PDF", file: "https://drive.google.com/file/d/17syWymiTO2emP5I8lnsI2sSpWI-j2HLS/view?usp=sharing" },
           ].map((item) => (
             <a
               key={item.file}
