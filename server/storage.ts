@@ -19,7 +19,7 @@ export class DatabaseStorage {
     email: doc.email ?? null,
     firstName: doc.firstName ?? null,
     lastName: doc.lastName ?? null,
-    phone: doc.phoneNumber,
+    phone: doc.phoneNumber ?? null,
     profileImageUrl: doc.profileImageUrl ?? null,
     status: doc.status ?? "Not active",
     membershipStartDate: doc.membershipStartDate ?? null,
