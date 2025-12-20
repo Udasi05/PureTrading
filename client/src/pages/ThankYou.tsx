@@ -51,10 +51,10 @@ export default function ThankYou() {
         {/* Downloads */}
         <div className="space-y-4">
           {[
-            { label: "Download Book 1", file: "/PureTrading/client/public/protected_files/book1.pdf" },
-            { label: "Download Book 2", file: "/PureTrading/client/public/protected_files/book2.pdf" },
-            { label: "Download Book 3", file: "/PureTrading/client/public/protected_files/book3.pdf" },
-            { label: "Technical & Risk Management PDF", file: "/PureTrading/client/public/protected_files/technical-risk.pdf" },
+            { label: "Download Book 1", file: "https://drive.google.com/file/d/1q-rcGBZsOZXI4usfRHkCXfnSUxrdBspj/view?usp=sharing" },
+            { label: "Download Book 2", file: "https://drive.google.com/file/d/1-ses5QBjmDOUF6YbQtKjm5PDyVjrzQPg/view?usp=sharing" },
+            { label: "Download Book 3", file: "https://drive.google.com/file/d/1PxF9z21MYliYJ2zirB9lv8g1BShHrXqz/view?usp=sharing" },
+            { label: "Technical & Risk Management PDF", file: "/PureTrading/dist/public/protected_files/technical-risk.pdf" },
           ].map((item) => (
             <a
               key={item.file}
